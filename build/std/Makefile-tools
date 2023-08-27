@@ -1,0 +1,74 @@
+# Makefile-tools
+#----------------------------------------------------------------------------------------
+#
+#  Project: LightForge 1.00
+#
+#  License: Boost Software License - Version 1.0 - August 17th, 2003
+#
+#            see http://www.boost.org/LICENSE_1_0.txt or the local copy
+#
+#  Copyright (c) 2023 Sergey Strukov. All rights reserved.
+#
+#----------------------------------------------------------------------------------------
+
+CCOPT_EXTRA ?=
+
+LDOPT_EXTRA ?=
+
+SIMPLEX_ROOT ?= .
+
+# tools -----------------------------------------
+
+ECHO = /usr/bin/echo
+
+MKDIR_ = /bin/mkdir -p
+
+CAT_ = /usr/bin/cat
+
+CC_ = g++
+
+AR_ = ar
+
+RM_ = rm -f
+
+FIND = /usr/bin/find
+
+PYTHON ?= python
+
+#------------------------------------------------
+
+MKDIR = @$(ECHO) MKDIR $@ ; $(MKDIR_)
+
+CAT = @$(ECHO) CAT ; $(CAT_)
+
+CC = @$(ECHO) CC $< ; $(CC_)
+
+LD = @$(ECHO) LD $@ ; $(CC_)
+
+AR = @$(ECHO) AR $@ ; $(AR_)
+
+RM = @$(ECHO) RM ; $(RM_)
+
+# options ---------------------------------------
+
+NOWARN = -Wno-non-virtual-dtor \
+         -Wno-switch \
+         -Wno-type-limits \
+         -Wno-enum-compare \
+         -Wno-missing-field-initializers \
+         -Wno-delete-non-virtual-dtor \
+         -Wno-misleading-indentation \
+
+
+CCINC = -I$(SIMPLEX_ROOT)/inc
+
+SIMPLEX_LIB = $(SIMPLEX_ROOT)/Simplex.a
+
+CCCPU = -march=native
+
+CCOPT = -c -std=c++20 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall -Wextra $(NOWARN) $(CCINC) $(CCOPT_EXTRA)
+
+LDOPT = -Wl,-s $(LDOPT_EXTRA) $(SIMPLEX_LIB)
+
+#------------------------------------------------
+
