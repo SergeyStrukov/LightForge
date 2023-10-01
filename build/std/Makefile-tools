@@ -15,8 +15,6 @@ CCOPT_EXTRA ?=
 
 LDOPT_EXTRA ?=
 
-SIMPLEX_ROOT ?= .
-
 # tools -----------------------------------------
 
 ECHO = /usr/bin/echo
@@ -32,8 +30,6 @@ AR_ = ar
 RM_ = rm -f
 
 FIND = /usr/bin/find
-
-PYTHON ?= python
 
 #------------------------------------------------
 
@@ -60,15 +56,13 @@ NOWARN = -Wno-non-virtual-dtor \
          -Wno-misleading-indentation \
 
 
-CCINC = -I$(SIMPLEX_ROOT)/inc
-
-SIMPLEX_LIB = $(SIMPLEX_ROOT)/Simplex.a
+CCINC = 
 
 CCCPU = -march=native
 
 CCOPT = -c -std=c++20 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall -Wextra $(NOWARN) $(CCINC) $(CCOPT_EXTRA)
 
-LDOPT = -Wl,-s $(LDOPT_EXTRA) $(SIMPLEX_LIB)
+LDOPT = -Wl,-s $(LDOPT_EXTRA)
 
 #------------------------------------------------
 

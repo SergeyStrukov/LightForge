@@ -11,59 +11,119 @@
 //
 //----------------------------------------------------------------------------------------
 
-#include <iostream>
+#include <exception>
+#include <stdexcept>
+#include <cstring>
+#include <filesystem>
 
-using namespace std;
+#include "StdPrint.h"
 
-template <class T>
-concept HasPrint = requires(T obj,ostream &out)
+namespace App {
+
+bool TestStr(const char *str1,const char *str2)
  {
-  obj.print(out);
- } ;
-
-ostream & operator << (ostream &out,const HasPrint auto &obj)
- {
-  obj.print(out);
-
-  return out;
+  return strcmp(str1,str2)==0;
  }
 
 class Opt
  {
+   filesystem::path curpath=filesystem::current_path();
+
+   bool add;
+   const char *self;
+   const char *wdir;
+   const char *path;
+
+   const char **build;
+   int buildCount;
+
   private:
 
    Opt(const Opt &) = delete;
 
    Opt & operator = (const Opt &) = delete;
 
+   static bool Command(const char *arg)
+    {
+     if( TestStr(arg,"add") ) return true;
+
+     if( !TestStr(arg,"del") )
+       {
+        throw runtime_error("unknown command");
+       }
+
+     return false;
+    }
+
   public:
 
    Opt(int argc,const char *argv[])
     {
-     // TODO
+     wdir=curpath.c_str();
 
-     (void)argc;
-     (void)argv;
+     if( argc<3 )
+       {
+        throw runtime_error("bad argument's number");
+       }
+
+     self=argv[0];
+     add=Command(argv[1]);
+     path=argv[2];
+     build=argv+3;
+     buildCount=argc-3;
     }
 
    void print(ostream &out) const
     {
-     // TODO
+     out << "self: " << self << endl ;
+     out << "wdir: " << wdir << endl ;
+     out << (add? "add":"del") << endl ;
+     out << "path: " << path << endl ;
 
-     (void)out;
+     for(int i=0; i<buildCount ;i++)
+       {
+        out << "   build: " << build[i] << endl ;
+       }
+    }
+
+   int commit() // TODO
+    {
+     cout << (*this) << endl ;
+
+     return 0;
     }
  };
 
-int main(int argc,const char *argv[])
+int Main(int argc,const char *argv[])
  {
   cout << "LightForge manager 1.00" << endl ;
   cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << endl << endl ;
 
   Opt opt(argc,argv);
 
-  cout << opt << endl ;
+  return opt.commit();
+ }
 
-  return 0;
+} // namespace App
+
+int main(int argc,const char *argv[])
+ {
+  try
+    {
+     return App::Main(argc,argv);
+    }
+  catch(std::exception &ex)
+    {
+     std::cout << std::endl << "Exception: " << ex.what() << std::endl ;
+
+     return 1;
+    }
+  catch(...)
+    {
+     std::cout << std::endl << "Unknown exception" << std::endl ;
+
+     return 1;
+    }
  }
 
 
