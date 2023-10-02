@@ -1,2 +1,2 @@
-TestForge: std
-TestForgeLib: std
+TestForge: TestForgeLib 
+TestForgeLib:

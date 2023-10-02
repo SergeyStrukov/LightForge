@@ -14,9 +14,9 @@
 #include <exception>
 #include <stdexcept>
 #include <cstring>
-#include <filesystem>
 
 #include "StdPrint.h"
+#include "Command.h"
 
 namespace App {
 
@@ -31,7 +31,6 @@ class Opt
 
    bool add;
    const char *self;
-   const char *wdir;
    const char *path;
 
    const char **build;
@@ -59,8 +58,6 @@ class Opt
 
    Opt(int argc,const char *argv[])
     {
-     wdir=curpath.c_str();
-
      if( argc<3 )
        {
         throw runtime_error("bad argument's number");
@@ -76,7 +73,7 @@ class Opt
    void print(ostream &out) const
     {
      out << "self: " << self << endl ;
-     out << "wdir: " << wdir << endl ;
+     out << "wdir: " << curpath.c_str() << endl ;
      out << (add? "add":"del") << endl ;
      out << "path: " << path << endl ;
 
@@ -86,9 +83,20 @@ class Opt
        }
     }
 
-   int commit() // TODO
+   int commit()
     {
      cout << (*this) << endl ;
+
+     filesystem::path forge=filesystem::path(self).parent_path();
+
+     if( add )
+       {
+        AddProject(curpath,forge,path,build,buildCount);
+       }
+     else
+       {
+        DelProject(curpath,forge,path,build,buildCount);
+       }
 
      return 0;
     }
