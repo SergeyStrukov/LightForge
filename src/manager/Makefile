@@ -11,8 +11,21 @@
 #
 #----------------------------------------------------------------------------------------
 
-.PHONY: install
+CC = g++
 
-install:
-	make -C src/manager
-	make -C src/MakeList
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra
+
+SRC = main.cpp AddProject.cpp DelProject.cpp
+
+INC = 
+
+TARGET = ../../manager.exe
+
+all: $(TARGET)
+
+$(TARGET) : $(INC)
+
+$(TARGET) : $(SRC)
+	$(CC) $(CCOPT) $^ -o $(TARGET)
+
+

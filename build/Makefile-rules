@@ -1,0 +1,51 @@
+# Makefile-rules
+#-------------------------------------------------------------------------------
+#
+#  Project: LightForge 1.00
+#
+#  License: Boost Software License - Version 1.0 - August 17th, 2003
+#
+#            see http://www.boost.org/LICENSE_1_0.txt or the local copy
+#
+#  Copyright (c) 2023 Sergey Strukov. All rights reserved.
+#
+#-------------------------------------------------------------------------------
+
+OBJ_PATH = obj
+
+ASM_PATH = asm
+
+DEP_PATH = dep
+
+DEP_FILE = $(DEP_PATH)/Makefile-dep
+
+#-------------------------------------------------------------------------------
+
+.PHONY : all list clean dep asm
+
+all: $(TARGET)
+
+#-------------------------------------------------------------------------------
+
+SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
+
+#-------------------------------------------------------------------------------
+
+INCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(INCDIR_LIST))
+
+CCINC_TARGET = $(addprefix -I,$(INCDIR_LIST_EXP))
+
+CC-opt.txt :
+	@$(ECHO) $(CCINC_TARGET) > $@
+
+#-------------------------------------------------------------------------------
+
+list:
+	@$(ECHO) "making list..." ; python ../../../MakeList.py $(SRCDIR_LIST_EXP)
+
+Makefile-list : $(SRCDIR_LIST_EXP)
+	@$(ECHO) "updating list..." ; python ../../../MakeList.py $(SRCDIR_LIST_EXP)
+
+include Makefile-list
+
+#-------------------------------------------------------------------------------
