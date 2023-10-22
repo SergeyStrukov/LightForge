@@ -41,10 +41,10 @@ CC-opt.txt :
 #-------------------------------------------------------------------------------
 
 list:
-	@$(ECHO) "making list..." ; python ../../../MakeList.py $(SRCDIR_LIST_EXP)
+	@$(ECHO) "making list..." ; ../../../MakeList.exe $(SRCDIR_LIST_EXP)
 
 Makefile-list : $(SRCDIR_LIST_EXP)
-	@$(ECHO) "updating list..." ; python ../../../MakeList.py $(SRCDIR_LIST_EXP)
+	@$(ECHO) "updating list..." ; ../../../MakeList.exe $(SRCDIR_LIST_EXP)
 
 include Makefile-list
 
