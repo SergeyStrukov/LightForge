@@ -20,6 +20,7 @@
 
 #include <vector>
 #include <string>
+#include <algorithm>
 
 namespace App {
 
@@ -64,6 +65,10 @@ class File
    const String & getPath() const { return path; }
 
    const String & getNoExt() const { return noext; }
+
+   auto operator == (const File &obj) const { return noext == obj.noext ; }
+
+   auto operator <=> (const File &obj) const { return noext <=> obj.noext ; }
  };
 
 File::File(const String &path_,const String &name_,const String &noext_)
@@ -96,6 +101,8 @@ class FileList
    ~FileList();
 
    void extend(const char *path);
+
+   void process();
 
    void print(std::ostream &out) const;
  };
@@ -143,6 +150,40 @@ FileList::~FileList()
 void FileList::extend(const char *path)
  {
   extend(path,Prefix());
+ }
+
+void FileList::process()
+ {
+  auto len=list.size();
+
+  if( len>=2 )
+    {
+     auto base=list.data();
+
+     std::sort(base,base+len);
+
+     len--;
+
+     unsigned dup=0;
+
+     for(auto ptr=base; len ;len--,ptr++)
+       {
+        if( ptr[0]==ptr[1] )
+          {
+           std::cout << "File name duplication: " << ptr[0].getPath() << std::endl
+                     << "                       " << ptr[1].getPath() << std::endl ;
+
+           dup++;
+
+           if( dup>10 ) break;
+          }
+       }
+
+     if( dup )
+       {
+        throw std::runtime_error("file name duplication");
+       }
+    }
  }
 
 void FileList::print(std::ostream &out) const
@@ -199,6 +240,8 @@ int Main(int argc,const char *argv[])
   FileList list;
 
   for(int i=1; i<argc ;i++) list.extend(argv[i]);
+
+  list.process();
 
   std::ofstream out("Makefile-list");
 
