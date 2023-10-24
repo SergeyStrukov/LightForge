@@ -17,17 +17,18 @@
 
 #include "StdPrint.h"
 #include "Command.h"
+#include "Tools.h"
 
 namespace App {
 
 bool TestStr(const char *str1,const char *str2)
  {
-  return strcmp(str1,str2)==0;
+  return std::strcmp(str1,str2)==0;
  }
 
 class Opt
  {
-   filesystem::path curpath=filesystem::current_path();
+   Path curpath=std::filesystem::current_path();
 
    bool add;
    const char *self;
@@ -38,9 +39,9 @@ class Opt
 
   private:
 
-   Opt(const Opt &) = delete;
+   Opt(const Opt &) = delete ;
 
-   Opt & operator = (const Opt &) = delete;
+   Opt & operator = (const Opt &) = delete ;
 
    static bool Command(const char *arg)
     {
@@ -48,7 +49,7 @@ class Opt
 
      if( !TestStr(arg,"del") )
        {
-        throw runtime_error("unknown command");
+        throw std::runtime_error("unknown command");
        }
 
      return false;
@@ -60,7 +61,7 @@ class Opt
     {
      if( argc<3 )
        {
-        throw runtime_error("bad argument's number");
+        throw std::runtime_error("bad argument's number");
        }
 
      self=argv[0];
@@ -70,24 +71,24 @@ class Opt
      buildCount=argc-3;
     }
 
-   void print(ostream &out) const
+   void print(std::ostream &out) const
     {
-     out << "self: " << self << endl ;
-     out << "wdir: " << curpath.c_str() << endl ;
-     out << (add? "add":"del") << endl ;
-     out << "path: " << path << endl ;
+     out << "self: " << self << std::endl ;
+     out << "wdir: " << curpath.c_str() << std::endl ;
+     out << (add? "add":"del") << std::endl ;
+     out << "path: " << path << std::endl ;
 
      for(int i=0; i<buildCount ;i++)
        {
-        out << "   build: " << build[i] << endl ;
+        out << "   build: " << build[i] << std::endl ;
        }
     }
 
    int commit()
     {
-     cout << (*this) << endl ;
+     std::cout << (*this) << std::endl ;
 
-     filesystem::path forge=filesystem::path(self).parent_path();
+     Path forge=std::filesystem::path(self).parent_path();
 
      if( add )
        {
@@ -104,8 +105,8 @@ class Opt
 
 int Main(int argc,const char *argv[])
  {
-  cout << "LightForge manager 1.00" << endl ;
-  cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << endl << endl ;
+  std::cout << "LightForge manager 1.00" << std::endl ;
+  std::cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << std::endl << std::endl ;
 
   Opt opt(argc,argv);
 

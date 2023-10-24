@@ -13,10 +13,16 @@
 
 #include "Command.h"
 
+#include <iostream>
+
 namespace App {
 
-void DelProject(filesystem::path curpath,filesystem::path forge,filesystem::path proj,const char **build,int buildCount)
+void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount)
  {
+  std::cout << curpath << std::endl ;
+  std::cout << forge << std::endl ;
+  std::cout << proj << std::endl ;
+
   // TODO
  }
 

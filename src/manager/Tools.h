@@ -1,4 +1,4 @@
-/* StdPrint.h */
+/* Tools.h */
 //----------------------------------------------------------------------------------------
 //
 //  Project: LightForge 1.00
@@ -11,25 +11,18 @@
 //
 //----------------------------------------------------------------------------------------
 
-#ifndef StdPrint_h
-#define StdPrint_h
+#ifndef Tools_h
+#define Tools_h
 
-#include <iostream>
+#include <filesystem>
 
 namespace App {
 
-template <class T>
-concept HasPrint = requires(T obj,std::ostream &out)
- {
-  obj.print(out);
- } ;
+/* using */
 
-std::ostream & operator << (std::ostream &out,const HasPrint auto &obj)
- {
-  obj.print(out);
-
-  return out;
- }
+using String = std::string;
+using Path = std::filesystem::path ;
+using Directory = std::filesystem::directory_iterator ;
 
 } // namespace App
 

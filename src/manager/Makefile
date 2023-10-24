@@ -15,9 +15,9 @@ CC = g++
 
 CCOPT = -std=c++20 -fwrapv -Wall -Wextra
 
-SRC = main.cpp AddProject.cpp DelProject.cpp
+SRC = main.cpp AddProject.cpp DelProject.cpp Reader.cpp
 
-INC = 
+INC =
 
 TARGET = ../../manager.exe
 

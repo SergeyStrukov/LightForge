@@ -1,4 +1,4 @@
-/* StdPrint.h */
+/* Reader.cpp */
 //----------------------------------------------------------------------------------------
 //
 //  Project: LightForge 1.00
@@ -11,26 +11,12 @@
 //
 //----------------------------------------------------------------------------------------
 
-#ifndef StdPrint_h
-#define StdPrint_h
-
-#include <iostream>
+#include "Reader.h"
 
 namespace App {
 
-template <class T>
-concept HasPrint = requires(T obj,std::ostream &out)
- {
-  obj.print(out);
- } ;
-
-std::ostream & operator << (std::ostream &out,const HasPrint auto &obj)
- {
-  obj.print(out);
-
-  return out;
- }
 
 } // namespace App
 
-#endif
+
+

@@ -56,11 +56,21 @@ class File
    String name;
    String noext;
 
+  private:
+
+   File(const File &) = delete ;
+
+   void operator = (const File &) = delete ;
+
   public:
 
-   File(const String &path,const String &name,const String &noext_);
+   File(const String &path,const String &name,const String &noext);
 
    ~File();
+
+   File(File &&) = default ;
+
+   File & operator = (File &&) = default ;
 
    const String & getPath() const { return path; }
 
@@ -89,6 +99,10 @@ class FileList
    std::vector<File> list;
 
   private:
+
+   FileList(const FileList &) = delete ;
+
+   void operator = (const FileList &) = delete ;
 
    void add(Path path,Prefix prefix);
 

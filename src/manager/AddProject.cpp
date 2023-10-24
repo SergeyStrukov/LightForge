@@ -17,11 +17,11 @@
 
 namespace App {
 
-void AddProject(filesystem::path curpath,filesystem::path forge,filesystem::path proj,const char **build,int buildCount)
+void AddProject(Path curpath,Path forge,Path proj,const char **build,int buildCount)
  {
-  cout << curpath << endl ;
-  cout << forge << endl ;
-  cout << proj << endl ;
+  std::cout << curpath << std::endl ;
+  std::cout << forge << std::endl ;
+  std::cout << proj << std::endl ;
 
   // TODO
  }

@@ -14,15 +14,13 @@
 #ifndef Command_h
 #define Command_h
 
-#include <filesystem>
+#include "Tools.h"
 
 namespace App {
 
-using namespace std;
+void AddProject(Path curpath,Path forge,Path proj,const char **build,int buildCount);
 
-void AddProject(filesystem::path curpath,filesystem::path forge,filesystem::path proj,const char **build,int buildCount);
-
-void DelProject(filesystem::path curpath,filesystem::path forge,filesystem::path proj,const char **build,int buildCount);
+void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount);
 
 } // namespace App
 
