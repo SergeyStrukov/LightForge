@@ -18,11 +18,15 @@
 
 namespace App {
 
+/* concepts */
+
 template <class T>
 concept HasPrint = requires(T obj,std::ostream &out)
  {
   obj.print(out);
  } ;
+
+/* functions */
 
 std::ostream & operator << (std::ostream &out,const HasPrint auto &obj)
  {

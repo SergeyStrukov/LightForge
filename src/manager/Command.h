@@ -18,6 +18,8 @@
 
 namespace App {
 
+/* functions */
+
 void AddProject(Path curpath,Path forge,Path proj,const char **build,int buildCount);
 
 void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount);
