@@ -17,6 +17,7 @@
 #include <fstream>
 
 #include "Tools.h"
+#include "StdPrint.h"
 
 namespace App {
 
@@ -48,6 +49,8 @@ enum TokenKind
 
   TokenError
  };
+
+const char * GetTextDesc(TokenKind kind);
 
 /* classes */
 
@@ -81,6 +84,11 @@ struct TextPos
        pos++;
       }
    }
+
+  void print(std::ostream &out) const
+   {
+    out << "(" << line << "," << pos << ")" ;
+   }
  };
 
 /* struct Token */
@@ -96,6 +104,11 @@ struct Token
   Token(TokenKind kind_,TextPos pos_) : kind(kind_),pos(pos_) {}
 
   Token(TokenKind kind_,TextPos pos_,char ch) : kind(kind_),pos(pos_),text(1,ch) {}
+
+  void print(std::ostream &out) const
+   {
+    out << pos << " " << GetTextDesc(kind) << " " << text ;
+   }
  };
 
 /* class CharTable */
@@ -157,15 +170,23 @@ class FileReader
 
    void skip(unsigned delta);
 
+   void move(Char beg);
+   void move();
+   void move(unsigned count);
+
    Token next(Char beg,TokenKind kind);
    void skipSpace();
    String skipName(char first);
+   void skipLongComment();
+   void skipShortComment();
 
    Token nextEOF();
    Token nextSpace(Char beg);
    Token nextLetter(Char beg);
    Token nextDigit(Char beg);
    Token nextPunct(Char beg);
+   Token nextLongComment();
+   Token nextShortComment();
    Token nextOther(Char beg);
 
   public:

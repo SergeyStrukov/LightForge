@@ -40,6 +40,24 @@ CharTable::CharTable()
 
 const CharTable CharTable::Object;
 
+/* enum TokenKind */
+
+const char * GetTextDesc(TokenKind kind)
+ {
+  switch( kind )
+    {
+     case TokenName         : return "Name";
+     case TokenPunct        : return "Punct";
+     case TokenSpace        : return "Space";
+     case TokenShortComment : return "ShortComment";
+     case TokenLongComment  : return "LongComment";
+     case TokenError        : return "Error";
+
+     default: // case TokenNull
+       return "Null";
+    }
+ }
+
 /* class FileReader::Builder */
 
 class FileReader::Builder
@@ -149,9 +167,31 @@ void FileReader::skip(unsigned delta)
     }
  }
 
+void FileReader::move(Char beg)
+ {
+  skip(1);
+
+  pos.update(beg.ch);
+ }
+
+void FileReader::move()
+ {
+  move(peek(0));
+ }
+
+void FileReader::move(unsigned count)
+ {
+  for(; count ;count--) move();
+ }
+
 FileReader::FileReader(const String &fileName)
  : inp(fileName.c_str())
  {
+  if( !inp.is_open() )
+    {
+     throw std::runtime_error("no such file");
+    }
+
   inp.exceptions(std::ifstream::badbit);
  }
 
@@ -163,9 +203,7 @@ Token FileReader::next(Char beg,TokenKind kind)
  {
   Token token(kind,pos,beg.ch);
 
-  skip(1);
-
-  pos.update(beg.ch);
+  move(beg);
 
   return token;
  }
@@ -178,9 +216,7 @@ void FileReader::skipSpace()
 
      if( beg.kind!=CharSpace ) break;
 
-     skip(1);
-
-     pos.update(beg.ch);
+     move(beg);
     }
  }
 
@@ -194,14 +230,64 @@ String FileReader::skipName(char first)
 
      if( beg.kind!=CharLetter && beg.kind!=CharDigit ) break;
 
-     skip(1);
-
-     pos.update(beg.ch);
+     move(beg);
 
      builder.add(beg.ch);
     }
 
   return builder.complete();
+ }
+
+void FileReader::skipLongComment()
+ {
+  move(2);
+
+  for(;;)
+    {
+     Char beg=peek(0);
+
+     if( beg.kind==CharEOF )
+       {
+        throw std::runtime_error("long comment is not closed");
+        break;
+       }
+
+     if( beg.ch=='*' )
+       {
+        Char sec=peek(1);
+
+        if( sec.ch=='/' )
+          {
+           move(beg);
+           move(sec);
+           break;
+          }
+        else
+          {
+           move(beg);
+          }
+       }
+     else
+       {
+        move(beg);
+       }
+    }
+ }
+
+void FileReader::skipShortComment()
+ {
+  move(2);
+
+  for(;;)
+    {
+     Char beg=peek(0);
+
+     if( beg.kind==CharEOF ) break;
+
+     move(beg);
+
+     if( beg.ch=='\n' ) break;
+    }
  }
 
 Token FileReader::nextEOF()
@@ -213,9 +299,7 @@ Token FileReader::nextSpace(Char beg)
  {
   Token token(TokenSpace,pos);
 
-  skip(1);
-
-  pos.update(beg.ch);
+  move(beg);
 
   skipSpace();
 
@@ -226,9 +310,7 @@ Token FileReader::nextLetter(Char beg)
  {
   Token token(TokenName,pos);
 
-  skip(1);
-
-  pos.update(beg.ch);
+  move(beg);
 
   token.text=skipName(beg.ch);
 
@@ -245,11 +327,33 @@ Token FileReader::nextPunct(Char beg)
   return next(beg,TokenPunct);
  }
 
-Token FileReader::nextOther(Char beg) // TODO
+Token FileReader::nextLongComment()
+ {
+  Token token(TokenLongComment,pos);
+
+  skipLongComment();
+
+  return token;
+ }
+
+Token FileReader::nextShortComment()
+ {
+  Token token(TokenShortComment,pos);
+
+  skipShortComment();
+
+  return token;
+ }
+
+Token FileReader::nextOther(Char beg)
  {
   if( beg.ch=='/' )
     {
-     // comments
+     Char next=peek(1);
+
+     if( next.ch=='*' ) return nextLongComment();
+
+     if( next.ch=='/' ) return nextShortComment();
     }
 
   return next(beg,TokenError);
