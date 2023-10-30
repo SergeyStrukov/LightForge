@@ -44,7 +44,9 @@ enum TokenKind
   TokenPunct,
   TokenSpace,
   TokenShortComment,
-  TokenLongComment
+  TokenLongComment,
+
+  TokenError
  };
 
 /* classes */
@@ -88,6 +90,12 @@ struct Token
   TokenKind kind;
   TextPos pos;
   String text; // Name and Punct only
+
+  Token() : kind(TokenNull) {}
+
+  Token(TokenKind kind_,TextPos pos_) : kind(kind_),pos(pos_) {}
+
+  Token(TokenKind kind_,TextPos pos_,char ch) : kind(kind_),pos(pos_),text(1,ch) {}
  };
 
 /* class CharTable */
@@ -123,6 +131,9 @@ class FileReader
     {
      char ch;
      CharKind kind;
+
+     void set(char ch);
+     void setEOF();
     };
 
    static constexpr unsigned Len = 128 ;
@@ -131,17 +142,31 @@ class FileReader
    Char buf[Len];
    unsigned off = 0 ;
    unsigned len = 0 ;
+   TextPos pos;
 
   private:
 
    FileReader(const FileReader &) = delete ;
    FileReader & operator = (const FileReader &) = delete ;
 
+   class Builder;
+
    void read(Char *dst,unsigned count);
 
    Char peek(unsigned ind);
 
    void skip(unsigned delta);
+
+   Token next(Char beg,TokenKind kind);
+   void skipSpace();
+   String skipName(char first);
+
+   Token nextEOF();
+   Token nextSpace(Char beg);
+   Token nextLetter(Char beg);
+   Token nextDigit(Char beg);
+   Token nextPunct(Char beg);
+   Token nextOther(Char beg);
 
   public:
 
