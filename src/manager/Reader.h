@@ -14,6 +14,7 @@
 #ifndef Reader_h
 #define Reader_h
 
+#include <vector>
 #include <fstream>
 
 #include "Tools.h"
@@ -49,6 +50,11 @@ enum TokenKind
 
   TokenError
  };
+
+inline bool hasValue(TokenKind kind)
+ {
+  return kind==TokenNull || kind==TokenName || kind==TokenPunct ;
+ }
 
 const char * GetTextDesc(TokenKind kind);
 
@@ -104,6 +110,8 @@ struct Token
   Token(TokenKind kind_,TextPos pos_) : kind(kind_),pos(pos_) {}
 
   Token(TokenKind kind_,TextPos pos_,char ch) : kind(kind_),pos(pos_),text(1,ch) {}
+
+  bool operator ! () const { return kind==TokenNull; }
 
   void print(std::ostream &out) const
    {
@@ -196,12 +204,30 @@ class FileReader
    ~FileReader();
 
    Token next();
+   Token nextValuable();
  };
 
 /* class ProjectReader */
 
 class ProjectReader
  {
+   String name;
+   std::vector<String> base;
+
+  private:
+
+   ProjectReader(const ProjectReader &) = default ;
+   ProjectReader & operator = (const ProjectReader &) = default ;
+
+  public:
+
+   explicit ProjectReader(const String &fileName);
+
+   ~ProjectReader();
+
+   const String & getName() const { return name; }
+
+   const std::vector<String> & getBase() const { return base; }
  };
 
 /* class TargetReader */

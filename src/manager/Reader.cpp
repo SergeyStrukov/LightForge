@@ -12,7 +12,6 @@
 //----------------------------------------------------------------------------------------
 
 #include <stdexcept>
-#include <vector>
 
 #include "Reader.h"
 
@@ -374,6 +373,58 @@ Token FileReader::next()
      default: // case CharOther
        return nextOther(beg);
     }
+ }
+
+Token FileReader::nextValuable() // TODO
+ {
+  for(;;)
+    {
+     Token ret=next();
+
+     if( hasValue(ret.kind) ) return ret;
+    }
+ }
+
+/* class ProjectReader */
+
+ProjectReader::ProjectReader(const String &fileName)
+ {
+  base.reserve(1000);
+
+  FileReader inp(fileName);
+
+  Token t1=inp.nextValuable();
+  Token t2=inp.nextValuable();
+
+  if( t1.kind!=TokenName )
+    {
+     throw std::runtime_error("name is expected");
+    }
+
+  if( t2.kind!=TokenPunct || t2.text!=":" )
+    {
+     throw std::runtime_error(": is expected");
+    }
+
+  name=std::move(t1.text);
+
+  for(;;)
+    {
+     Token t=inp.nextValuable();
+
+     if( !t ) break;
+
+     if( t.kind!=TokenName )
+       {
+        throw std::runtime_error("name is expected");
+       }
+
+     base.push_back(std::move(t.text));
+    }
+ }
+
+ProjectReader::~ProjectReader()
+ {
  }
 
 } // namespace App

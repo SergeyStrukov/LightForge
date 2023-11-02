@@ -20,19 +20,17 @@ namespace App {
 
 void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount)
  {
-  std::cout << curpath << std::endl ;
-  std::cout << forge << std::endl ;
-  std::cout << proj << std::endl ;
+  std::cout << curpath << std::endl ; // TODO del
+  std::cout << forge << std::endl ;   // TODO del
+  std::cout << proj << std::endl ;    // TODO del
 
-  FileReader inp(curpath/proj/"PROJECT");
+  ProjectReader inp(curpath/proj/"PROJECT");
 
-  for(;;)
+  std::cout << inp.getName() << " :" << std::endl ;
+
+  for(const String &str : inp.getBase() )
     {
-     Token token=inp.next();
-
-     if( token.kind==TokenNull ) break;
-
-     std::cout << token << std::endl ;
+     std::cout << str << std::endl ;
     }
 
   // TODO
