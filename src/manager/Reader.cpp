@@ -183,11 +183,14 @@ void FileReader::move(unsigned count)
   for(; count ;count--) move();
  }
 
-FileReader::FileReader(const String &fileName)
- : inp(fileName.c_str())
+FileReader::FileReader(const String &fileName_)
+ : fileName(fileName_),
+   inp(fileName.c_str())
  {
   if( !inp.is_open() )
     {
+     std::cout << "Cannot open file " << fileName << std::endl ;
+
      throw std::runtime_error("no such file");
     }
 
@@ -239,6 +242,8 @@ String FileReader::skipName(char first)
 
 void FileReader::skipLongComment()
  {
+  TextPos startpos=pos;
+
   move(2);
 
   for(;;)
@@ -247,7 +252,10 @@ void FileReader::skipLongComment()
 
      if( beg.kind==CharEOF )
        {
-        throw std::runtime_error("long comment is not closed");
+        std::cout << "File " << fileName << startpos << " : long comment is not closed" << std::endl ;
+
+        throw std::runtime_error("file processing error");
+
         break;
        }
 
@@ -375,11 +383,18 @@ Token FileReader::next()
     }
  }
 
-Token FileReader::nextValuable() // TODO
+Token FileReader::nextValuable()
  {
   for(;;)
     {
      Token ret=next();
+
+     if( ret.kind==TokenError )
+       {
+        std::cout << "File " << fileName << ret.pos << " : forbidden symbol" << std::endl ;
+
+        throw std::runtime_error("file processing error");
+       }
 
      if( hasValue(ret.kind) ) return ret;
     }
@@ -398,12 +413,16 @@ ProjectReader::ProjectReader(const String &fileName)
 
   if( t1.kind!=TokenName )
     {
-     throw std::runtime_error("name is expected");
+     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
     }
 
   if( t2.kind!=TokenPunct || t2.text!=":" )
     {
-     throw std::runtime_error(": is expected");
+     std::cout << "File " << fileName << t2.pos << " : ':' is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
     }
 
   name=std::move(t1.text);
@@ -416,7 +435,9 @@ ProjectReader::ProjectReader(const String &fileName)
 
      if( t.kind!=TokenName )
        {
-        throw std::runtime_error("name is expected");
+        std::cout << "File " << fileName << t.pos << " : name is expected" << std::endl ;
+
+        throw std::runtime_error("file processing error");
        }
 
      base.push_back(std::move(t.text));

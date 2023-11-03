@@ -159,6 +159,7 @@ class FileReader
 
    static constexpr unsigned Len = 128 ;
 
+   String fileName;
    std::ifstream inp;
    Char buf[Len];
    unsigned off = 0 ;
