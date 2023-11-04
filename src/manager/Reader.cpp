@@ -450,8 +450,105 @@ ProjectReader::~ProjectReader()
 
 /* class ProjectListReader */
 
-ProjectListReader::ProjectListReader(const String &fileName) // TODO
+bool ProjectListReader::Rec::findBaseName(const String &projName) const
  {
+  auto beg=base.begin();
+  auto end=base.end();
+
+  return std::find_if(beg,end, [&] (const String &obj) { return obj==projName; } ) != end ;
+ }
+
+void ProjectListReader::warnBaseMissing(const String &projName)
+ {
+  for(const auto &rec : list )
+    {
+     if( rec.findBaseName(projName) )
+       {
+        std::cout << "Project " << rec.name << " lost the base " << projName << std::endl ;
+       }
+    }
+ }
+
+void ProjectListReader::append(String &&projName,std::vector<String> &&base)
+ {
+  list.emplace_back(Rec(std::move(projName),std::move(base)));
+ }
+
+ProjectListReader::ProjectListReader(const String &fileName)
+ {
+  list.reserve(1000);
+
+  FileReader inp(fileName);
+
+  Token t1=inp.nextValuable();
+
+  if( !t1 ) return;
+
+  if( t1.kind!=TokenName )
+    {
+     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  Token t2=inp.nextValuable();
+
+  if( t2.kind!=TokenPunct || t2.text!=":" )
+    {
+     std::cout << "File " << fileName << t2.pos << " : ':' is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  std::vector<String> base;
+
+  base.reserve(100);
+
+  Token t3=inp.nextValuable();
+
+  if( !t3 )
+    {
+     append(std::move(t1.text),std::move(base));
+     return;
+    }
+
+  if( t3.kind!=TokenName )
+    {
+     std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  for(;;)
+    {
+     Token t=inp.nextValuable();
+
+     if( !t ) break;
+
+     if( t.kind==TokenName )
+       {
+        base.emplace_back(std::move(t3.text));
+        t3=std::move(t);
+       }
+     else
+       {
+        if( t.kind!=TokenPunct || t.text!=":" )
+          {
+           std::cout << "File " << fileName << t.pos << " : ':' is expected" << std::endl ;
+
+           throw std::runtime_error("file processing error");
+          }
+
+        append(std::move(t1.text),std::move(base));
+
+        t1=std::move(t3);
+        base={};
+        base.reserve(100);
+       }
+    }
+
+  base.emplace_back(std::move(t3.text));
+  append(std::move(t1.text),std::move(base));
  }
 
 ProjectListReader::~ProjectListReader()
@@ -460,10 +557,24 @@ ProjectListReader::~ProjectListReader()
 
 void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList) // TODO
  {
+
  }
 
-void ProjectListReader::delProject(const String &projName) // TODO
+void ProjectListReader::delProject(const String &projName)
  {
+  for(auto ptr=list.begin(),end=list.end(); ptr!=end ;++ptr)
+    {
+     if( ptr->name==projName )
+       {
+        list.erase(ptr);
+
+        warnBaseMissing(projName);
+
+        return;
+       }
+    }
+
+  std::cout << "There is no project " << projName << std::endl ;
  }
 
 void ProjectListReader::Rec::print(std::ostream &out) const

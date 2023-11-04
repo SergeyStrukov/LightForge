@@ -241,6 +241,10 @@ class ProjectListReader
      String name;
      std::vector<String> base;
 
+     Rec(String &&name_,std::vector<String> &&base_) : name(std::move(name_)),base(std::move(base_)) {}
+
+     bool findBaseName(const String &projName) const;
+
      void print(std::ostream &out) const;
     };
 
@@ -250,6 +254,10 @@ class ProjectListReader
 
    ProjectListReader(const ProjectListReader &) = default ;
    ProjectListReader & operator = (const ProjectListReader &) = default ;
+
+   void warnBaseMissing(const String &projName);
+
+   void append(String &&projName,std::vector<String> &&base);
 
   public:
 
