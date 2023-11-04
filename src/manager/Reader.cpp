@@ -448,6 +448,53 @@ ProjectReader::~ProjectReader()
  {
  }
 
+/* class ProjectListReader */
+
+ProjectListReader::ProjectListReader(const String &fileName) // TODO
+ {
+ }
+
+ProjectListReader::~ProjectListReader()
+ {
+ }
+
+void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList) // TODO
+ {
+ }
+
+void ProjectListReader::delProject(const String &projName) // TODO
+ {
+ }
+
+void ProjectListReader::Rec::print(std::ostream &out) const
+ {
+  out << name << ": " ;
+
+  for(const String &x : base )
+    {
+     out << x << " " ;
+    }
+ }
+
+void ProjectListReader::save(const String &fileName) const
+ {
+  std::ofstream out(fileName);
+
+  out.exceptions(std::ifstream::badbit);
+
+  for(const Rec &rec : list )
+    {
+     out << rec << "\n" ;
+    }
+
+  out.close();
+
+  if( !out )
+    {
+     throw std::runtime_error("saving 'projects' error");
+    }
+ }
+
 } // namespace App
 
 

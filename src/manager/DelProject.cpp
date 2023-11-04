@@ -18,22 +18,47 @@
 
 namespace App {
 
+template <class S>
+static void DelProjectFolder(Path forge,S build,String name)
+ {
+  Path folder=forge/"build"/build/name;
+
+  std::filesystem::remove_all(folder);
+ }
+
 void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount)
  {
-  std::cout << curpath << std::endl ; // TODO del
-  std::cout << forge << std::endl ;   // TODO del
-  std::cout << proj << std::endl ;    // TODO del
-
   ProjectReader inp(curpath/proj/"PROJECT");
 
-  std::cout << inp.getName() << " :" << std::endl ;
+  String projName=inp.getName();
 
-  for(const String &str : inp.getBase() )
+  if( buildCount )
     {
-     std::cout << str << std::endl ;
+     for(int i=0; i<buildCount ;i++)
+       {
+        DelProjectFolder(forge,build[i],projName);
+       }
+    }
+  else
+    {
+     Directory dirList(forge/"build");
+
+     for(const auto &entry : dirList )
+       {
+        if( entry.is_directory() )
+          {
+           DelProjectFolder(forge,entry.path().filename(),projName);
+          }
+       }
     }
 
-  // TODO
+  String infoFile = forge/"projects";
+
+  ProjectListReader info(infoFile);
+
+  info.delProject(projName);
+
+  info.save(infoFile);
  }
 
 } // namespace App

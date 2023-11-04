@@ -67,6 +67,7 @@ class CharTable;
 
 class FileReader;
 class ProjectReader;
+class ProjectListReader;
 class TargetReader;
 
 /* struct TextPos */
@@ -228,7 +229,39 @@ class ProjectReader
 
    const String & getName() const { return name; }
 
-   const std::vector<String> & getBase() const { return base; }
+   const std::vector<String> & getBaseList() const { return base; }
+ };
+
+/* class ProjectListReader */
+
+class ProjectListReader
+ {
+   struct Rec
+    {
+     String name;
+     std::vector<String> base;
+
+     void print(std::ostream &out) const;
+    };
+
+   std::vector<Rec> list;
+
+  private:
+
+   ProjectListReader(const ProjectListReader &) = default ;
+   ProjectListReader & operator = (const ProjectListReader &) = default ;
+
+  public:
+
+   ProjectListReader(const String &fileName);
+
+   ~ProjectListReader();
+
+   void addProject(const String &projName,const std::vector<String> &baseList);
+
+   void delProject(const String &projName);
+
+   void save(const String &fileName) const;
  };
 
 /* class TargetReader */
