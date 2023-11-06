@@ -11,26 +11,24 @@
 //
 //----------------------------------------------------------------------------------------
 
-#include <iostream>
-
 #include "Command.h"
 #include "Reader.h"
 
 namespace App {
 
 template <class S>
-static void DelProjectFolder(Path forge,S build,String name)
+static void DelProjectFolder(const Path &forge,S build,const String &projName)
  {
-  Path folder=forge/"build"/build/name;
+  Path folder=forge/"build"/build/projName;
 
   std::filesystem::remove_all(folder);
  }
 
-void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCount)
+void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int buildCount)
  {
   ProjectReader inp(curpath/proj/"PROJECT");
 
-  String projName=inp.getName();
+  const String &projName=inp.getName();
 
   if( buildCount )
     {
@@ -52,7 +50,7 @@ void DelProject(Path curpath,Path forge,Path proj,const char **build,int buildCo
        }
     }
 
-  String infoFile = forge/"projects";
+  String infoFile=forge/"projects";
 
   ProjectListReader info(infoFile);
 

@@ -259,6 +259,8 @@ class ProjectListReader
 
    void append(String &&projName,std::vector<String> &&base);
 
+   bool findProjName(const String &projName) const;
+
   public:
 
    ProjectListReader(const String &fileName);

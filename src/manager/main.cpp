@@ -34,7 +34,7 @@ class Opt
    const char *self;
    const char *path;
 
-   const char **build;
+   const char *const*build;
    int buildCount;
 
   private:
@@ -57,7 +57,7 @@ class Opt
 
   public:
 
-   Opt(int argc,const char *argv[])
+   Opt(int argc,const char *const*argv)
     {
      if( argc<3 )
        {
@@ -86,8 +86,6 @@ class Opt
 
    int commit()
     {
-     std::cout << (*this) << std::endl ;
-
      Path forge=std::filesystem::path(self).parent_path();
 
      if( add )
@@ -103,7 +101,7 @@ class Opt
     }
  };
 
-int Main(int argc,const char *argv[])
+int Main(int argc,const char *const*argv)
  {
   std::cout << "LightForge manager 1.00" << std::endl ;
   std::cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << std::endl << std::endl ;
@@ -115,7 +113,7 @@ int Main(int argc,const char *argv[])
 
 } // namespace App
 
-int main(int argc,const char *argv[])
+int main(int argc,const char *const*argv)
  {
   try
     {

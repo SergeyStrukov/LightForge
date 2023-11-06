@@ -474,6 +474,14 @@ void ProjectListReader::append(String &&projName,std::vector<String> &&base)
   list.emplace_back(Rec(std::move(projName),std::move(base)));
  }
 
+bool ProjectListReader::findProjName(const String &projName) const
+ {
+  auto beg=list.begin();
+  auto end=list.end();
+
+  return std::find_if(beg,end, [&] (const Rec &obj) { return obj.name==projName; } ) != end ;
+ }
+
 ProjectListReader::ProjectListReader(const String &fileName)
  {
   list.reserve(1000);
@@ -555,9 +563,24 @@ ProjectListReader::~ProjectListReader()
  {
  }
 
-void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList) // TODO
+void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList)
  {
+  if( findProjName(projName) )
+    {
+     std::cout << "Project " << projName << " is already installed" << std::endl ;
 
+     throw std::runtime_error("cannot install project");
+    }
+
+  for(const String &base : baseList )
+    if( !findProjName(base) )
+      {
+       std::cout << "There is no base project " << base << std::endl ;
+
+       throw std::runtime_error("cannot install project");
+      }
+
+  append(String(projName),std::vector<String>(baseList));
  }
 
 void ProjectListReader::delProject(const String &projName)
