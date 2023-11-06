@@ -440,7 +440,7 @@ ProjectReader::ProjectReader(const String &fileName)
         throw std::runtime_error("file processing error");
        }
 
-     base.push_back(std::move(t.text));
+     base.emplace_back(std::move(t.text));
     }
  }
 
@@ -471,7 +471,7 @@ void ProjectListReader::warnBaseMissing(const String &projName)
 
 void ProjectListReader::append(String &&projName,std::vector<String> &&base)
  {
-  list.emplace_back(Rec(std::move(projName),std::move(base)));
+  list.emplace_back(std::move(projName),std::move(base));
  }
 
 bool ProjectListReader::findProjName(const String &projName) const
@@ -627,6 +627,41 @@ void ProjectListReader::save(const String &fileName) const
     {
      throw std::runtime_error("saving 'projects' error");
     }
+ }
+
+/* class TargetReader */
+
+TargetReader::TargetReader(const Path &path,const Path &fileName)
+ {
+ }
+
+TargetReader::~TargetReader()
+ {
+ }
+
+/* class TargetListReader */
+
+TargetListReader::TargetListReader(const Path &projRoot)
+ {
+  list.reserve(100);
+
+  DirTree tree(projRoot);
+
+  for(const auto &entry : tree )
+    {
+     const Path &path=entry.path();
+
+     Path fileName=path/"TARGET";
+
+     if( std::filesystem::is_regular_file(fileName) )
+       {
+        list.emplace_back(path,fileName);
+       }
+    }
+ }
+
+TargetListReader::~TargetListReader()
+ {
  }
 
 } // namespace App

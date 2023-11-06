@@ -69,6 +69,7 @@ class FileReader;
 class ProjectReader;
 class ProjectListReader;
 class TargetReader;
+class TargetListReader;
 
 /* struct TextPos */
 
@@ -218,8 +219,8 @@ class ProjectReader
 
   private:
 
-   ProjectReader(const ProjectReader &) = default ;
-   ProjectReader & operator = (const ProjectReader &) = default ;
+   ProjectReader(const ProjectReader &) = delete ;
+   ProjectReader & operator = (const ProjectReader &) = delete ;
 
   public:
 
@@ -252,8 +253,8 @@ class ProjectListReader
 
   private:
 
-   ProjectListReader(const ProjectListReader &) = default ;
-   ProjectListReader & operator = (const ProjectListReader &) = default ;
+   ProjectListReader(const ProjectListReader &) = delete ;
+   ProjectListReader & operator = (const ProjectListReader &) = delete ;
 
    void warnBaseMissing(const String &projName);
 
@@ -263,7 +264,7 @@ class ProjectListReader
 
   public:
 
-   ProjectListReader(const String &fileName);
+   explicit ProjectListReader(const String &fileName);
 
    ~ProjectListReader();
 
@@ -278,6 +279,39 @@ class ProjectListReader
 
 class TargetReader
  {
+  private:
+
+   TargetReader(const TargetReader &) = delete ;
+   TargetReader & operator = (const TargetReader &) = delete ;
+
+  public:
+
+   TargetReader(const Path &path,const Path &fileName);
+
+   ~TargetReader();
+
+   TargetReader(TargetReader &&) = default ;
+   TargetReader & operator = (TargetReader &&) = default ;
+ };
+
+/* class TargetListReader */
+
+class TargetListReader
+ {
+   std::vector<TargetReader> list;
+
+  private:
+
+   TargetListReader(const TargetListReader &) = delete ;
+   TargetListReader & operator = (const TargetListReader &) = delete ;
+
+  public:
+
+   explicit TargetListReader(const Path &projRoot);
+
+   ~TargetListReader();
+
+   const std::vector<TargetReader> & getList() const { return list; }
  };
 
 } // namespace App

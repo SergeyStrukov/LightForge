@@ -23,6 +23,7 @@ namespace App {
 using String = std::string;
 using Path = std::filesystem::path ;
 using Directory = std::filesystem::directory_iterator ;
+using DirTree = std::filesystem::recursive_directory_iterator ;
 
 } // namespace App
 
