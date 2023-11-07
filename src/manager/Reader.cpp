@@ -631,8 +631,114 @@ void ProjectListReader::save(const String &fileName) const
 
 /* class TargetReader */
 
-TargetReader::TargetReader(const Path &path,const Path &fileName)
+TargetReader::TargetReader(const Path &path_,const Path &fileName)
+ : path(path_)
  {
+  FileReader inp(fileName);
+
+  Token t1=inp.nextValuable();
+
+  if( t1.kind!=TokenName )
+    {
+     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  if( t1.text=="exe" )
+    {
+     kind=TargetExe;
+    }
+  else if( t1.text=="lib" )
+    {
+     kind=TargetLib;
+    }
+  else
+    {
+     std::cout << "File " << fileName << t1.pos << " : unknown target kind" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  Token t2=inp.nextValuable();
+
+  if( t2.kind!=TokenName )
+    {
+     std::cout << "File " << fileName << t2.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  name=std::move(t2.text);
+
+  Token t3=inp.nextValuable();
+
+  if( t3.kind!=TokenPunct || t3.text!=":" )
+    {
+     std::cout << "File " << fileName << t3.pos << " : ':' is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  base.reserve(100);
+
+  bool flag=true;
+
+  for(;;)
+    {
+     if( flag )
+       {
+        t1=inp.nextValuable();
+
+        if( t1.kind!=TokenName )
+          {
+           std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
+
+           throw std::runtime_error("file processing error");
+          }
+       }
+
+     t2=inp.nextValuable();
+
+     if( t2.kind==TokenPunct )
+       {
+        if( t2.text=="." )
+          {
+           t3=inp.nextValuable();
+
+           if( t3.kind!=TokenName )
+             {
+              std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
+
+              throw std::runtime_error("file processing error");
+             }
+
+           base.emplace_back(std::move(t1.text),std::move(t3.text));
+
+           flag=true;
+          }
+        else if( t2.text=="=" )
+          {
+           break;
+          }
+        else
+          {
+           std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
+
+           throw std::runtime_error("file processing error");
+          }
+       }
+     else if( t2.kind==TokenName )
+       {
+        base.emplace_back(std::move(t1.text));
+
+        t1=std::move(t2);
+
+        flag=false;
+       }
+    }
+
+  // TODO
  }
 
 TargetReader::~TargetReader()
@@ -643,7 +749,7 @@ TargetReader::~TargetReader()
 
 TargetListReader::TargetListReader(const Path &projRoot)
  {
-  list.reserve(100);
+  list.reserve(1000);
 
   DirTree tree(projRoot);
 

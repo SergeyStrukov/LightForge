@@ -277,8 +277,36 @@ class ProjectListReader
 
 /* class TargetReader */
 
-class TargetReader
+enum TargetKind
  {
+  TargetLib,
+  TargetExe
+ };
+
+struct BaseSpec
+ {
+  String proj;
+  String target;
+
+  explicit BaseSpec(String &&proj_) : proj(proj_) {}
+
+  BaseSpec(String &&proj_,String &&target_) : proj(proj_),target(target_) {}
+ };
+
+struct TargetInfo
+ {
+  TargetKind kind;
+  String name;
+  String outName;
+  std::vector<String> src;
+  std::vector<String> inc;
+  std::vector<BaseSpec> base;
+ };
+
+class TargetReader : TargetInfo
+ {
+   Path path;
+
   private:
 
    TargetReader(const TargetReader &) = delete ;
@@ -292,6 +320,10 @@ class TargetReader
 
    TargetReader(TargetReader &&) = default ;
    TargetReader & operator = (TargetReader &&) = default ;
+
+   const Path & getPath() const { return path; }
+
+   const TargetInfo & getInfo() const { return *this; }
  };
 
 /* class TargetListReader */
