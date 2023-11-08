@@ -25,6 +25,13 @@ using Path = std::filesystem::path ;
 using Directory = std::filesystem::directory_iterator ;
 using DirTree = std::filesystem::recursive_directory_iterator ;
 
+/* functions */
+
+inline Path Relative(const Path &path,const Path &base)
+ {
+  return path.lexically_relative(base);
+ }
+
 } // namespace App
 
 #endif

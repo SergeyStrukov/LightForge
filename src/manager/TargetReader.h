@@ -43,6 +43,7 @@ struct BaseSpec
 
 struct TargetInfo
  {
+  Path path;
   TargetKind kind;
   String name;
   String outName;
@@ -54,7 +55,6 @@ struct TargetInfo
 
 class TargetReader : TargetInfo
  {
-   Path path;
    bool outFlag = false ;
    bool srcFlag = false ;
    bool incFlag = false ;
@@ -69,14 +69,12 @@ class TargetReader : TargetInfo
 
   public:
 
-   TargetReader(const Path &path,const Path &fileName);
+   TargetReader(Path &&path,const Path &fileName);
 
    ~TargetReader();
 
    TargetReader(TargetReader &&) = default ;
    TargetReader & operator = (TargetReader &&) = default ;
-
-   const Path & getPath() const { return path; }
 
    const TargetInfo & getInfo() const { return *this; }
  };

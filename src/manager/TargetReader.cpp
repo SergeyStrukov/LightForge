@@ -84,9 +84,10 @@ void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fil
     }
  }
 
-TargetReader::TargetReader(const Path &path_,const Path &fileName)
- : path(path_)
+TargetReader::TargetReader(Path &&path_,const Path &fileName)
  {
+  path=std::move(path_);
+
   // 1
 
   FileReader inp(fileName);
@@ -229,6 +230,20 @@ TargetReader::TargetReader(const Path &path_,const Path &fileName)
         s1=std::move(s2);
        }
     }
+
+  if( !outFlag )
+    {
+     std::cout << "File " << fileName << " : OUT is not defined" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  if( !srcFlag )
+    {
+     std::cout << "File " << fileName << " : SRC is not defined" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
  }
 
 TargetReader::~TargetReader()
@@ -251,9 +266,11 @@ TargetListReader::TargetListReader(const Path &projRoot)
 
      if( std::filesystem::is_regular_file(fileName) )
        {
-        list.emplace_back(path,fileName);
+        list.emplace_back(Relative(path,projRoot),fileName);
        }
     }
+
+  // TODO check target name unique
  }
 
 TargetListReader::~TargetListReader()
