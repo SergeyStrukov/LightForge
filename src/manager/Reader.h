@@ -64,12 +64,7 @@ struct TextPos;
 struct Token;
 
 class CharTable;
-
 class FileReader;
-class ProjectReader;
-class ProjectListReader;
-class TargetReader;
-class TargetListReader;
 
 /* struct TextPos */
 
@@ -208,142 +203,8 @@ class FileReader
 
    Token next();
    Token nextValuable();
- };
 
-/* class ProjectReader */
-
-class ProjectReader
- {
-   String name;
-   std::vector<String> base;
-
-  private:
-
-   ProjectReader(const ProjectReader &) = delete ;
-   ProjectReader & operator = (const ProjectReader &) = delete ;
-
-  public:
-
-   explicit ProjectReader(const String &fileName);
-
-   ~ProjectReader();
-
-   const String & getName() const { return name; }
-
-   const std::vector<String> & getBaseList() const { return base; }
- };
-
-/* class ProjectListReader */
-
-class ProjectListReader
- {
-   struct Rec
-    {
-     String name;
-     std::vector<String> base;
-
-     Rec(String &&name_,std::vector<String> &&base_) : name(std::move(name_)),base(std::move(base_)) {}
-
-     bool findBaseName(const String &projName) const;
-
-     void print(std::ostream &out) const;
-    };
-
-   std::vector<Rec> list;
-
-  private:
-
-   ProjectListReader(const ProjectListReader &) = delete ;
-   ProjectListReader & operator = (const ProjectListReader &) = delete ;
-
-   void warnBaseMissing(const String &projName);
-
-   void append(String &&projName,std::vector<String> &&base);
-
-   bool findProjName(const String &projName) const;
-
-  public:
-
-   explicit ProjectListReader(const String &fileName);
-
-   ~ProjectListReader();
-
-   void addProject(const String &projName,const std::vector<String> &baseList);
-
-   void delProject(const String &projName);
-
-   void save(const String &fileName) const;
- };
-
-/* class TargetReader */
-
-enum TargetKind
- {
-  TargetLib,
-  TargetExe
- };
-
-struct BaseSpec
- {
-  String proj;
-  String target;
-
-  explicit BaseSpec(String &&proj_) : proj(proj_) {}
-
-  BaseSpec(String &&proj_,String &&target_) : proj(proj_),target(target_) {}
- };
-
-struct TargetInfo
- {
-  TargetKind kind;
-  String name;
-  String outName;
-  std::vector<String> src;
-  std::vector<String> inc;
-  std::vector<BaseSpec> base;
- };
-
-class TargetReader : TargetInfo
- {
-   Path path;
-
-  private:
-
-   TargetReader(const TargetReader &) = delete ;
-   TargetReader & operator = (const TargetReader &) = delete ;
-
-  public:
-
-   TargetReader(const Path &path,const Path &fileName);
-
-   ~TargetReader();
-
-   TargetReader(TargetReader &&) = default ;
-   TargetReader & operator = (TargetReader &&) = default ;
-
-   const Path & getPath() const { return path; }
-
-   const TargetInfo & getInfo() const { return *this; }
- };
-
-/* class TargetListReader */
-
-class TargetListReader
- {
-   std::vector<TargetReader> list;
-
-  private:
-
-   TargetListReader(const TargetListReader &) = delete ;
-   TargetListReader & operator = (const TargetListReader &) = delete ;
-
-  public:
-
-   explicit TargetListReader(const Path &projRoot);
-
-   ~TargetListReader();
-
-   const std::vector<TargetReader> & getList() const { return list; }
+   Token nextString();
  };
 
 } // namespace App

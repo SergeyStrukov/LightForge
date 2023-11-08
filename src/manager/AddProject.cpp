@@ -12,7 +12,8 @@
 //----------------------------------------------------------------------------------------
 
 #include "Command.h"
-#include "Reader.h"
+#include "ProjectReader.h"
+#include "TargetReader.h"
 
 namespace App {
 

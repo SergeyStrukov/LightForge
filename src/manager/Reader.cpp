@@ -17,6 +17,24 @@
 
 namespace App {
 
+/* enum TokenKind */
+
+const char * GetTextDesc(TokenKind kind)
+ {
+  switch( kind )
+    {
+     case TokenName         : return "Name";
+     case TokenPunct        : return "Punct";
+     case TokenSpace        : return "Space";
+     case TokenShortComment : return "ShortComment";
+     case TokenLongComment  : return "LongComment";
+     case TokenError        : return "Error";
+
+     default: // case TokenNull
+       return "Null";
+    }
+ }
+
 /* class CharTable */
 
 void CharTable::set(const char *str,CharKind kind)
@@ -39,24 +57,6 @@ CharTable::CharTable()
 
 const CharTable CharTable::Object;
 
-/* enum TokenKind */
-
-const char * GetTextDesc(TokenKind kind)
- {
-  switch( kind )
-    {
-     case TokenName         : return "Name";
-     case TokenPunct        : return "Punct";
-     case TokenSpace        : return "Space";
-     case TokenShortComment : return "ShortComment";
-     case TokenLongComment  : return "LongComment";
-     case TokenError        : return "Error";
-
-     default: // case TokenNull
-       return "Null";
-    }
- }
-
 /* class FileReader::Builder */
 
 class FileReader::Builder
@@ -65,11 +65,9 @@ class FileReader::Builder
 
   public:
 
-   explicit Builder(char ch)
-    {
-     buf.reserve(1000);
-     add(ch);
-    }
+   Builder() { buf.reserve(1000); }
+
+   explicit Builder(char ch) : Builder() { add(ch); }
 
    ~Builder() {}
 
@@ -400,374 +398,29 @@ Token FileReader::nextValuable()
     }
  }
 
-/* class ProjectReader */
-
-ProjectReader::ProjectReader(const String &fileName)
+Token FileReader::nextString()
  {
-  base.reserve(1000);
+  skipSpace();
 
-  FileReader inp(fileName);
-
-  Token t1=inp.nextValuable();
-  Token t2=inp.nextValuable();
-
-  if( t1.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  if( t2.kind!=TokenPunct || t2.text!=":" )
-    {
-     std::cout << "File " << fileName << t2.pos << " : ':' is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  name=std::move(t1.text);
+  Token ret(TokenName,pos);
+  Builder builder;
 
   for(;;)
     {
-     Token t=inp.nextValuable();
+     Char beg=peek(0);
 
-     if( !t ) break;
+     if( beg.kind==CharEOF || beg.kind==CharSpace ) break;
 
-     if( t.kind!=TokenName )
-       {
-        std::cout << "File " << fileName << t.pos << " : name is expected" << std::endl ;
+     move(beg);
 
-        throw std::runtime_error("file processing error");
-       }
-
-     base.emplace_back(std::move(t.text));
-    }
- }
-
-ProjectReader::~ProjectReader()
- {
- }
-
-/* class ProjectListReader */
-
-bool ProjectListReader::Rec::findBaseName(const String &projName) const
- {
-  auto beg=base.begin();
-  auto end=base.end();
-
-  return std::find_if(beg,end, [&] (const String &obj) { return obj==projName; } ) != end ;
- }
-
-void ProjectListReader::warnBaseMissing(const String &projName)
- {
-  for(const auto &rec : list )
-    {
-     if( rec.findBaseName(projName) )
-       {
-        std::cout << "Project " << rec.name << " lost the base " << projName << std::endl ;
-       }
-    }
- }
-
-void ProjectListReader::append(String &&projName,std::vector<String> &&base)
- {
-  list.emplace_back(std::move(projName),std::move(base));
- }
-
-bool ProjectListReader::findProjName(const String &projName) const
- {
-  auto beg=list.begin();
-  auto end=list.end();
-
-  return std::find_if(beg,end, [&] (const Rec &obj) { return obj.name==projName; } ) != end ;
- }
-
-ProjectListReader::ProjectListReader(const String &fileName)
- {
-  list.reserve(1000);
-
-  FileReader inp(fileName);
-
-  Token t1=inp.nextValuable();
-
-  if( !t1 ) return;
-
-  if( t1.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
+     builder.add(beg.ch);
     }
 
-  Token t2=inp.nextValuable();
+  ret.text=builder.complete();
 
-  if( t2.kind!=TokenPunct || t2.text!=":" )
-    {
-     std::cout << "File " << fileName << t2.pos << " : ':' is expected" << std::endl ;
+  if( ret.text.size()==0 ) ret.kind=TokenNull;
 
-     throw std::runtime_error("file processing error");
-    }
-
-  std::vector<String> base;
-
-  base.reserve(100);
-
-  Token t3=inp.nextValuable();
-
-  if( !t3 )
-    {
-     append(std::move(t1.text),std::move(base));
-     return;
-    }
-
-  if( t3.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  for(;;)
-    {
-     Token t=inp.nextValuable();
-
-     if( !t ) break;
-
-     if( t.kind==TokenName )
-       {
-        base.emplace_back(std::move(t3.text));
-        t3=std::move(t);
-       }
-     else
-       {
-        if( t.kind!=TokenPunct || t.text!=":" )
-          {
-           std::cout << "File " << fileName << t.pos << " : ':' is expected" << std::endl ;
-
-           throw std::runtime_error("file processing error");
-          }
-
-        append(std::move(t1.text),std::move(base));
-
-        t1=std::move(t3);
-        base={};
-        base.reserve(100);
-       }
-    }
-
-  base.emplace_back(std::move(t3.text));
-  append(std::move(t1.text),std::move(base));
- }
-
-ProjectListReader::~ProjectListReader()
- {
- }
-
-void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList)
- {
-  if( findProjName(projName) )
-    {
-     std::cout << "Project " << projName << " is already installed" << std::endl ;
-
-     throw std::runtime_error("cannot install project");
-    }
-
-  for(const String &base : baseList )
-    if( !findProjName(base) )
-      {
-       std::cout << "There is no base project " << base << std::endl ;
-
-       throw std::runtime_error("cannot install project");
-      }
-
-  append(String(projName),std::vector<String>(baseList));
- }
-
-void ProjectListReader::delProject(const String &projName)
- {
-  for(auto ptr=list.begin(),end=list.end(); ptr!=end ;++ptr)
-    {
-     if( ptr->name==projName )
-       {
-        list.erase(ptr);
-
-        warnBaseMissing(projName);
-
-        return;
-       }
-    }
-
-  std::cout << "There is no project " << projName << std::endl ;
- }
-
-void ProjectListReader::Rec::print(std::ostream &out) const
- {
-  out << name << ": " ;
-
-  for(const String &x : base )
-    {
-     out << x << " " ;
-    }
- }
-
-void ProjectListReader::save(const String &fileName) const
- {
-  std::ofstream out(fileName);
-
-  out.exceptions(std::ifstream::badbit);
-
-  for(const Rec &rec : list )
-    {
-     out << rec << "\n" ;
-    }
-
-  out.close();
-
-  if( !out )
-    {
-     throw std::runtime_error("saving 'projects' error");
-    }
- }
-
-/* class TargetReader */
-
-TargetReader::TargetReader(const Path &path_,const Path &fileName)
- : path(path_)
- {
-  FileReader inp(fileName);
-
-  Token t1=inp.nextValuable();
-
-  if( t1.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  if( t1.text=="exe" )
-    {
-     kind=TargetExe;
-    }
-  else if( t1.text=="lib" )
-    {
-     kind=TargetLib;
-    }
-  else
-    {
-     std::cout << "File " << fileName << t1.pos << " : unknown target kind" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  Token t2=inp.nextValuable();
-
-  if( t2.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t2.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  name=std::move(t2.text);
-
-  Token t3=inp.nextValuable();
-
-  if( t3.kind!=TokenPunct || t3.text!=":" )
-    {
-     std::cout << "File " << fileName << t3.pos << " : ':' is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  base.reserve(100);
-
-  bool flag=true;
-
-  for(;;)
-    {
-     if( flag )
-       {
-        t1=inp.nextValuable();
-
-        if( t1.kind!=TokenName )
-          {
-           std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-           throw std::runtime_error("file processing error");
-          }
-       }
-
-     t2=inp.nextValuable();
-
-     if( t2.kind==TokenPunct )
-       {
-        if( t2.text=="." )
-          {
-           t3=inp.nextValuable();
-
-           if( t3.kind!=TokenName )
-             {
-              std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
-
-              throw std::runtime_error("file processing error");
-             }
-
-           base.emplace_back(std::move(t1.text),std::move(t3.text));
-
-           flag=true;
-          }
-        else if( t2.text=="=" )
-          {
-           break;
-          }
-        else
-          {
-           std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
-
-           throw std::runtime_error("file processing error");
-          }
-       }
-     else if( t2.kind==TokenName )
-       {
-        base.emplace_back(std::move(t1.text));
-
-        t1=std::move(t2);
-
-        flag=false;
-       }
-    }
-
-  // TODO
- }
-
-TargetReader::~TargetReader()
- {
- }
-
-/* class TargetListReader */
-
-TargetListReader::TargetListReader(const Path &projRoot)
- {
-  list.reserve(1000);
-
-  DirTree tree(projRoot);
-
-  for(const auto &entry : tree )
-    {
-     const Path &path=entry.path();
-
-     Path fileName=path/"TARGET";
-
-     if( std::filesystem::is_regular_file(fileName) )
-       {
-        list.emplace_back(path,fileName);
-       }
-    }
- }
-
-TargetListReader::~TargetListReader()
- {
+  return ret;
  }
 
 } // namespace App
