@@ -27,10 +27,11 @@ using DirTree = std::filesystem::recursive_directory_iterator ;
 
 /* functions */
 
-inline Path Relative(const Path &path,const Path &base)
- {
-  return path.lexically_relative(base);
- }
+inline Path CurPath() { return std::filesystem::current_path(); }
+
+inline Path Relative(const Path &path,const Path &base) { return path.lexically_relative(base); }
+
+inline void DestroyDir(const Path &path) { std::filesystem::remove_all(path); }
 
 } // namespace App
 

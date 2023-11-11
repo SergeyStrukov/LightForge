@@ -21,7 +21,7 @@ static void DelProjectFolder(const Path &forge,S build,const String &projName)
  {
   Path folder=forge/"build"/build/projName;
 
-  std::filesystem::remove_all(folder);
+  DestroyDir(folder);
  }
 
 void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int buildCount)

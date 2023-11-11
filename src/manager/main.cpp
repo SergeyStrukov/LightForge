@@ -11,7 +11,6 @@
 //
 //----------------------------------------------------------------------------------------
 
-#include <exception>
 #include <stdexcept>
 #include <cstring>
 
@@ -21,14 +20,11 @@
 
 namespace App {
 
-bool TestStr(const char *str1,const char *str2)
- {
-  return std::strcmp(str1,str2)==0;
- }
+/* class Opt */
 
 class Opt
  {
-   Path curpath=std::filesystem::current_path();
+   Path curpath=CurPath();
 
    bool add;
    const char *self;
@@ -40,8 +36,12 @@ class Opt
   private:
 
    Opt(const Opt &) = delete ;
-
    Opt & operator = (const Opt &) = delete ;
+
+   static bool TestStr(const char *str1,const char *str2)
+    {
+     return std::strcmp(str1,str2)==0;
+    }
 
    static bool Command(const char *arg)
     {
@@ -86,7 +86,7 @@ class Opt
 
    int commit()
     {
-     Path forge=std::filesystem::path(self).parent_path();
+     Path forge=Path(self).parent_path();
 
      if( add )
        {
@@ -100,6 +100,8 @@ class Opt
      return 0;
     }
  };
+
+/* Main() */
 
 int Main(int argc,const char *const*argv)
  {

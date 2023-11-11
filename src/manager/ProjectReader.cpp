@@ -105,6 +105,8 @@ ProjectListReader::ProjectListReader(const String &fileName)
 
   FileReader inp(fileName);
 
+  // 1
+
   Token t1=inp.nextValuable();
 
   if( !t1 ) return;
@@ -125,6 +127,8 @@ ProjectListReader::ProjectListReader(const String &fileName)
      throw std::runtime_error("file processing error");
     }
 
+  // 2
+
   std::vector<String> base;
 
   base.reserve(100);
@@ -134,6 +138,7 @@ ProjectListReader::ProjectListReader(const String &fileName)
   if( !t3 )
     {
      append(std::move(t1.text),std::move(base));
+
      return;
     }
 
@@ -231,7 +236,7 @@ void ProjectListReader::save(const String &fileName) const
  {
   std::ofstream out(fileName);
 
-  out.exceptions(std::ifstream::badbit);
+  out.exceptions(std::ofstream::badbit);
 
   for(const Rec &rec : list )
     {
