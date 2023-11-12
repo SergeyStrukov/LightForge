@@ -64,6 +64,8 @@ struct TextPos;
 struct Token;
 
 class CharTable;
+struct Char;
+class ScanFile;
 class FileReader;
 
 /* struct TextPos */
@@ -125,7 +127,6 @@ class CharTable
   private:
 
    CharTable(const CharTable &) = delete ;
-
    CharTable & operator = (const CharTable &) = delete ;
 
    static uint8_t Index(char ch) { return (uint8_t)ch; }
@@ -141,18 +142,25 @@ class CharTable
    static const CharTable Object;
  };
 
-/* class FileReader */
+/* struct Char */
 
-class FileReader
+struct Char
  {
-   struct Char
-    {
-     char ch;
-     CharKind kind;
+  char ch;
+  CharKind kind;
 
-     void set(char ch);
-     void setEOF();
-    };
+  void set(char ch);
+  void setEOF();
+ };
+
+/* class ScanFile */
+
+class ScanFile
+ {
+  private:
+
+   ScanFile(const ScanFile &) = delete ;
+   ScanFile & operator = (const ScanFile &) = delete ;
 
    static constexpr unsigned Len = 128 ;
 
@@ -165,12 +173,17 @@ class FileReader
 
   private:
 
-   FileReader(const FileReader &) = delete ;
-   FileReader & operator = (const FileReader &) = delete ;
-
-   class Builder;
-
    void read(Char *dst,unsigned count);
+
+  public:
+
+   explicit ScanFile(const String &fileName);
+
+   ~ScanFile();
+
+   const String & getFileName() const { return fileName; }
+
+   TextPos getPos() const { return pos; }
 
    Char peek(unsigned ind);
 
@@ -179,6 +192,18 @@ class FileReader
    void move(Char beg);
    void move();
    void move(unsigned count);
+ };
+
+/* class FileReader */
+
+class FileReader : ScanFile
+ {
+  private:
+
+   FileReader(const FileReader &) = delete ;
+   FileReader & operator = (const FileReader &) = delete ;
+
+   class Builder;
 
    Token next(Char beg,TokenKind kind);
    void skipSpace();

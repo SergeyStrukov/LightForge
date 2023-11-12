@@ -18,18 +18,20 @@
 
 namespace App {
 
-/* classes */
-
-class TargetReader;
-class TargetListReader;
-
-/* class TargetReader */
+/* consts */
 
 enum TargetKind
  {
   TargetLib,
   TargetExe
  };
+
+/* classes */
+
+class TargetReader;
+class TargetListReader;
+
+/* class TargetReader */
 
 struct BaseSpec
  {
@@ -58,7 +60,7 @@ class TargetReader : TargetInfo
    bool outFlag = false ;
    bool srcFlag = false ;
    bool incFlag = false ;
-   bool incPrivFlag = false ;
+   bool incPrivateFlag = false ;
 
   private:
 

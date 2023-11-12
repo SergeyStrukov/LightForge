@@ -57,6 +57,121 @@ CharTable::CharTable()
 
 const CharTable CharTable::Object;
 
+/* struct Char */
+
+void Char::set(char ch_)
+ {
+  ch=ch_;
+  kind=CharTable::Object(ch_);
+ }
+
+void Char::setEOF()
+ {
+  ch=0;
+  kind=CharEOF;
+ }
+
+/* class ScanFile */
+
+void ScanFile::read(Char *dst,unsigned count)
+ {
+  for(; count ;count--,dst++)
+    {
+     int sym=inp.get();
+
+     if( sym==std::char_traits<char>::eof() )
+       {
+        dst->setEOF();
+       }
+     else
+       {
+        dst->set((char)sym);
+       }
+    }
+ }
+
+ScanFile::ScanFile(const String &fileName_)
+ : fileName(fileName_),
+   inp(fileName.c_str())
+ {
+  if( !inp.is_open() )
+    {
+     std::cout << "Cannot open file " << fileName << std::endl ;
+
+     throw std::runtime_error("no such file");
+    }
+
+  inp.exceptions(std::ifstream::badbit);
+ }
+
+ScanFile::~ScanFile()
+ {
+ }
+
+Char ScanFile::peek(unsigned ind)
+ {
+  if( ind>=Len )
+    {
+     throw std::runtime_error("too big index");
+    }
+
+  if( ind>=len )
+    {
+     if( ind>=Len-off )
+       {
+        ForwardCopy(buf,buf+off,len);
+        off=0;
+       }
+
+     unsigned t=off+len;
+     unsigned s=Len-t;
+
+     read(buf+t,s);
+
+     len+=s;
+    }
+
+  return buf[off+ind];
+ }
+
+void ScanFile::skip(unsigned delta)
+ {
+  if( delta<len )
+    {
+     off+=delta;
+     len-=delta;
+    }
+  else
+    {
+     delta-=len;
+
+     off=0;
+     len=0;
+
+     if( delta )
+       {
+        throw std::runtime_error("too big skip");
+       }
+    }
+ }
+
+void ScanFile::move(Char beg)
+ {
+  skip(1);
+
+  pos.update(beg.ch);
+ }
+
+void ScanFile::move()
+ {
+  move(peek(0));
+ }
+
+void ScanFile::move(unsigned count)
+ {
+  for(; count ;count--) move();
+ }
+
 /* class FileReader::Builder */
 
 class FileReader::Builder
@@ -78,130 +193,9 @@ class FileReader::Builder
 
 /* class FileReader */
 
-namespace {
-
-template <class T>
-void Copy(T *dst,const T *src,unsigned len)
- {
-  for(; len ;len--,dst++,src++) *dst=*src;
- }
-
-} // local namespace
-
-void FileReader::Char::set(char ch_)
- {
-  ch=ch_;
-  kind=CharTable::Object(ch_);
- }
-
-void FileReader::Char::setEOF()
- {
-  ch=0;
-  kind=CharEOF;
- }
-
-void FileReader::read(Char *dst,unsigned count)
- {
-  for(; count ;count--,dst++)
-    {
-     int sym=inp.get();
-
-     if( sym==std::char_traits<char>::eof() )
-       {
-        dst->setEOF();
-       }
-     else
-       {
-        dst->set((char)sym);
-       }
-    }
- }
-
-auto FileReader::peek(unsigned ind) -> Char
- {
-  if( ind>=Len )
-    {
-     throw std::runtime_error("too big index");
-    }
-
-  if( ind>=len )
-    {
-     if( ind>=Len-off )
-       {
-        Copy(buf,buf+off,len);
-        off=0;
-       }
-
-     unsigned t=off+len;
-     unsigned s=Len-t;
-
-     read(buf+t,s);
-
-     len+=s;
-    }
-
-  return buf[off+ind];
- }
-
-void FileReader::skip(unsigned delta)
- {
-  if( delta<len )
-    {
-     off+=delta;
-     len-=delta;
-    }
-  else
-    {
-     delta-=len;
-
-     off=0;
-     len=0;
-
-     if( delta )
-       {
-        throw std::runtime_error("too big skip");
-       }
-    }
- }
-
-void FileReader::move(Char beg)
- {
-  skip(1);
-
-  pos.update(beg.ch);
- }
-
-void FileReader::move()
- {
-  move(peek(0));
- }
-
-void FileReader::move(unsigned count)
- {
-  for(; count ;count--) move();
- }
-
-FileReader::FileReader(const String &fileName_)
- : fileName(fileName_),
-   inp(fileName.c_str())
- {
-  if( !inp.is_open() )
-    {
-     std::cout << "Cannot open file " << fileName << std::endl ;
-
-     throw std::runtime_error("no such file");
-    }
-
-  inp.exceptions(std::ifstream::badbit);
- }
-
-FileReader::~FileReader()
- {
- }
-
 Token FileReader::next(Char beg,TokenKind kind)
  {
-  Token token(kind,pos,beg.ch);
+  Token token(kind,getPos(),beg.ch);
 
   move(beg);
 
@@ -240,7 +234,7 @@ String FileReader::skipName(char first)
 
 void FileReader::skipLongComment()
  {
-  TextPos startpos=pos;
+  TextPos startPos=getPos();
 
   move(2);
 
@@ -250,7 +244,7 @@ void FileReader::skipLongComment()
 
      if( beg.kind==CharEOF )
        {
-        std::cout << "File " << fileName << startpos << " : long comment is not closed" << std::endl ;
+        std::cout << "File " << getFileName() << startPos << " : long comment is not closed" << std::endl ;
 
         throw std::runtime_error("file processing error");
 
@@ -297,12 +291,12 @@ void FileReader::skipShortComment()
 
 Token FileReader::nextEOF()
  {
-  return Token(TokenNull,pos);
+  return Token(TokenNull,getPos());
  }
 
 Token FileReader::nextSpace(Char beg)
  {
-  Token token(TokenSpace,pos);
+  Token token(TokenSpace,getPos());
 
   move(beg);
 
@@ -313,7 +307,7 @@ Token FileReader::nextSpace(Char beg)
 
 Token FileReader::nextLetter(Char beg)
  {
-  Token token(TokenName,pos);
+  Token token(TokenName,getPos());
 
   move(beg);
 
@@ -334,7 +328,7 @@ Token FileReader::nextPunct(Char beg)
 
 Token FileReader::nextLongComment()
  {
-  Token token(TokenLongComment,pos);
+  Token token(TokenLongComment,getPos());
 
   skipLongComment();
 
@@ -343,7 +337,7 @@ Token FileReader::nextLongComment()
 
 Token FileReader::nextShortComment()
  {
-  Token token(TokenShortComment,pos);
+  Token token(TokenShortComment,getPos());
 
   skipShortComment();
 
@@ -362,6 +356,15 @@ Token FileReader::nextOther(Char beg)
     }
 
   return next(beg,TokenError);
+ }
+
+FileReader::FileReader(const String &fileName)
+ : ScanFile(fileName)
+ {
+ }
+
+FileReader::~FileReader()
+ {
  }
 
 Token FileReader::next()
@@ -389,7 +392,7 @@ Token FileReader::nextValuable()
 
      if( ret.kind==TokenError )
        {
-        std::cout << "File " << fileName << ret.pos << " : forbidden symbol" << std::endl ;
+        std::cout << "File " << getFileName() << ret.pos << " : forbidden symbol" << std::endl ;
 
         throw std::runtime_error("file processing error");
        }
@@ -402,7 +405,7 @@ Token FileReader::nextString()
  {
   skipSpace();
 
-  Token ret(TokenName,pos);
+  Token ret(TokenName,getPos());
   Builder builder;
 
   for(;;)

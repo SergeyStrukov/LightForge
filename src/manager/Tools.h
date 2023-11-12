@@ -33,6 +33,14 @@ inline Path Relative(const Path &path,const Path &base) { return path.lexically_
 
 inline void DestroyDir(const Path &path) { std::filesystem::remove_all(path); }
 
+/* copy functions */
+
+template <class T>
+void ForwardCopy(T *dst,const T *src,unsigned len)
+ {
+  for(; len ;len--,dst++,src++) *dst=*src;
+ }
+
 } // namespace App
 
 #endif

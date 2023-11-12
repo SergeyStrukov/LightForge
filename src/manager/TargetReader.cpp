@@ -66,7 +66,7 @@ void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fil
     }
   else if( key=="INC_PRIVATE" )
     {
-     if( incPrivFlag )
+     if( incPrivateFlag )
        {
         std::cout << "File " << fileName << pos << " : INC_PRIVATE key duplication" << std::endl ;
 
@@ -74,11 +74,11 @@ void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fil
        }
 
      incPrivate=std::move(list);
-     incPrivFlag=true;
+     incPrivateFlag=true;
     }
   else
     {
-     std::cout << "File " << fileName << pos << " : unknown key" << std::endl ;
+     std::cout << "File " << fileName << pos << " : unknown key '" << key << "'" << std::endl ;
 
      throw std::runtime_error("file processing error");
     }
@@ -270,7 +270,7 @@ TargetListReader::TargetListReader(const Path &projRoot)
        }
     }
 
-  // TODO check target name unique
+  // TODO check target name uniqueness
  }
 
 TargetListReader::~TargetListReader()
