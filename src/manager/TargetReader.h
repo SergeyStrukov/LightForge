@@ -38,7 +38,7 @@ struct BaseSpec
   String proj;
   String target;
 
-  explicit BaseSpec(String &&proj_) : proj(proj_) {}
+  explicit BaseSpec(String &&target_) : target(target_) {}
 
   BaseSpec(String &&proj_,String &&target_) : proj(proj_),target(target_) {}
  };

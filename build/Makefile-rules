@@ -31,12 +31,7 @@ SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
 
 #-------------------------------------------------------------------------------
 
-INCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(INCDIR_LIST))
-
-CCINC_TARGET = $(addprefix -I,$(INCDIR_LIST_EXP))
-
-CC-opt.txt :
-	@$(ECHO) $(CCINC_TARGET) > $@
+# TODO CC-opt.txt :
 
 #-------------------------------------------------------------------------------
 
