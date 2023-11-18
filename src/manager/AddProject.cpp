@@ -90,6 +90,22 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
 
   out << "SRCDIR_LIST =" << PrintList(target.src) << "\n\n" ;
 
+  out << "BASE_LIST = \\\n" ;
+
+  for(const BaseSpec &obj : target.base )
+    {
+     if( obj.proj.empty() )
+       {
+        out << "../" << obj.target << "/Makefile \\\n" ;
+       }
+     else
+       {
+        out << "../../" << obj.proj << "/" << obj.target << "/Makefile \\\n" ;
+       }
+    }
+
+  out << "\n" ;
+
   out << "include ../../Makefile-tools\n\n" ;
 
   out << "include ../../../Makefile-rules\n\n" ;
@@ -225,7 +241,7 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
 
   TargetListReader targets(projRoot);
 
-  // TODO check bases
+  targets.checkBases(baseList);
 
   info.addProject(projName,baseList);
 

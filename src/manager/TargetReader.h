@@ -28,10 +28,13 @@ enum TargetKind
 
 /* classes */
 
+struct BaseSpec;
+struct TargetInfo;
+
 class TargetReader;
 class TargetListReader;
 
-/* class TargetReader */
+/* struct BaseSpec */
 
 struct BaseSpec
  {
@@ -43,6 +46,8 @@ struct BaseSpec
   BaseSpec(String &&proj_,String &&target_) : proj(proj_),target(target_) {}
  };
 
+/* struct TargetInfo */
+
 struct TargetInfo
  {
   Path path;
@@ -53,7 +58,11 @@ struct TargetInfo
   std::vector<String> inc;
   std::vector<String> incPrivate;
   std::vector<BaseSpec> base;
+
+  void checkBases(const std::vector<String> &baseList) const;
  };
+
+/* class TargetReader */
 
 class TargetReader : TargetInfo
  {
@@ -99,6 +108,8 @@ class TargetListReader
    ~TargetListReader();
 
    const std::vector<TargetReader> & getList() const { return list; }
+
+   void checkBases(const std::vector<String> &baseList) const;
  };
 
 } // namespace App

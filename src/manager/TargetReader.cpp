@@ -18,6 +18,28 @@
 
 namespace App {
 
+/* struct TargetInfo */
+
+void TargetInfo::checkBases(const std::vector<String> &baseList) const
+ {
+  std::vector<String> list(baseList);
+
+  std::sort(list.begin(),list.end());
+
+  for(const BaseSpec &obj : base )
+    {
+     if( !obj.proj.empty() )
+       {
+        if( !std::binary_search(list.begin(),list.end(),obj.proj) )
+          {
+           std::cout << "Target " << name << " has bad base project" << obj.proj << std::endl ;
+
+           throw std::runtime_error("target base is not in the project base list");
+          }
+       }
+    }
+ }
+
 /* class TargetReader */
 
 void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fileName,TextPos pos)
@@ -302,6 +324,14 @@ TargetListReader::TargetListReader(const Path &projRoot)
 
 TargetListReader::~TargetListReader()
  {
+ }
+
+void TargetListReader::checkBases(const std::vector<String> &baseList) const
+ {
+  for(const TargetReader &obj : list )
+    {
+     obj.getInfo().checkBases(baseList);
+    }
  }
 
 } // namespace App

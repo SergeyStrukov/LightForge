@@ -31,7 +31,11 @@ SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
 
 #-------------------------------------------------------------------------------
 
-# TODO CC-opt.txt :
+CC-opt.txt : $(BASE_LIST)
+	@$(ECHO) "making CC-opt..." ; ../../../MakeCCopt.exe
+
+LD-opt.txt : $(BASE_LIST)
+	@$(ECHO) "making LD-opt..." ; ../../../MakeLDopt.exe
 
 #-------------------------------------------------------------------------------
 
