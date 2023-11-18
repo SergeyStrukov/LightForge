@@ -12,6 +12,7 @@
 //----------------------------------------------------------------------------------------
 
 #include <stdexcept>
+#include <algorithm>
 
 #include "TargetReader.h"
 
@@ -270,7 +271,33 @@ TargetListReader::TargetListReader(const Path &projRoot)
        }
     }
 
-  // TODO check target name uniqueness
+  size_t len=list.size();
+
+  if( len>=2 )
+    {
+     const TargetReader *ptr=list.data();
+
+     std::vector<const TargetInfo *> temp(len);
+
+     for(size_t i=0; i<len ;i++)
+       {
+        temp[i]=&ptr[i].getInfo();
+       }
+
+     std::sort(temp.begin(),temp.end(), [] (const TargetInfo *a,const TargetInfo *b) { return a->name<b->name; } );
+
+     for(size_t i=0; i<len-1 ;i++)
+       {
+        if( temp[i]->name==temp[i+1]->name )
+          {
+           std::cout << "Target name " << temp[i]->name << " duplication" << std::endl ;
+           std::cout << "Path1 " << temp[i]->path << std::endl ;
+           std::cout << "Path2 " << temp[i+1]->path << std::endl ;
+
+           throw std::runtime_error("target name duplication");
+          }
+       }
+    }
  }
 
 TargetListReader::~TargetListReader()
