@@ -19,8 +19,6 @@ LDOPT_EXTRA ?=
 
 ECHO = /usr/bin/echo
 
-MKDIR_ = /bin/mkdir -p
-
 CAT_ = /usr/bin/cat
 
 CC_ = g++
@@ -29,11 +27,7 @@ AR_ = ar
 
 RM_ = rm -f
 
-FIND = /usr/bin/find
-
 #-------------------------------------------------------------------------------
-
-MKDIR = @$(ECHO) MKDIR $@ ; $(MKDIR_)
 
 CAT = @$(ECHO) CAT ; $(CAT_)
 
