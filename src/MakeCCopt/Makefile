@@ -13,19 +13,17 @@
 
 CC = g++
 
-CCOPT = -std=c++20 -fwrapv -Wall -Wextra
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
 
-SRC = main.cpp
+SRC = main.cpp ../common/FullBaseList.cpp
 
-INC = 
+INC = ../common/Tools.h ../common/FullBaseList.h
 
 TARGET = ../../build/MakeCCopt.exe
 
 all: $(TARGET)
 
-$(TARGET) : $(INC)
-
-$(TARGET) : $(SRC)
-	$(CC) $(CCOPT) $^ -o $(TARGET)
+$(TARGET) : $(SRC) $(INC)
+	$(CC) $(CCOPT) $(SRC) -o $(TARGET)
 
 

@@ -14,19 +14,14 @@
 #include <exception>
 #include <stdexcept>
 
-#include <iostream>
 #include <fstream>
-#include <filesystem>
 
 #include <vector>
-#include <string>
 #include <algorithm>
 
-namespace App {
+#include "Tools.h"
 
-using String = std::string ;
-using Path = std::filesystem::path ;
-using Directory = std::filesystem::directory_iterator ;
+namespace App {
 
 /* struct Prefix */
 
@@ -39,14 +34,12 @@ struct Prefix
   explicit Prefix(unsigned off_) : off(off_) {}
 
   Prefix shift() const { return Prefix(off+2); }
+
+  void print(std::ostream &out) const
+   {
+    for(auto cnt=off; cnt ;cnt--) out.put(' ');
+   }
  };
-
-std::ostream & operator << (std::ostream &out,Prefix prefix)
- {
-  for(auto cnt=prefix.off; cnt ;cnt--) out.put(' ');
-
-  return out;
- }
 
 /* class File */
 
@@ -129,7 +122,7 @@ void FileList::add(Path path,Prefix prefix)
     {
      std::cout << prefix << "  file: " << name << std::endl ;
 
-     list.emplace_back(File(path,name,name.stem()));
+     list.emplace_back(path,name,name.stem());
     }
  }
 
@@ -172,7 +165,7 @@ void FileList::process()
 
   if( len>=2 )
     {
-     auto base=list.data();
+     File *base=list.data();
 
      std::sort(base,base+len);
 
@@ -180,7 +173,7 @@ void FileList::process()
 
      unsigned dup=0;
 
-     for(auto ptr=base; len ;len--,ptr++)
+     for(const File *ptr=base; len ;len--,ptr++)
        {
         if( ptr[0]==ptr[1] )
           {
@@ -253,19 +246,22 @@ int Main(int argc,const char *argv[])
 
   FileList list;
 
-  for(int i=1; i<argc ;i++) list.extend(argv[i]);
+  for(int i=1; i<argc ;i++)
+    {
+     list.extend(argv[i]);
+    }
 
   list.process();
 
   std::ofstream out("Makefile-list");
 
-  list.print(out);
+  out << list ;
 
   out.close();
 
   if( !out )
     {
-     std::cout << std::endl << "File write error" << std::endl ;
+     std::cout << std::endl << "'Makefile-list' creation error" << std::endl ;
 
      return 1;
     }

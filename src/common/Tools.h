@@ -15,6 +15,7 @@
 #define Tools_h
 
 #include <filesystem>
+#include <iostream>
 
 namespace App {
 
@@ -25,6 +26,14 @@ using Path = std::filesystem::path ;
 using Directory = std::filesystem::directory_iterator ;
 using DirTree = std::filesystem::recursive_directory_iterator ;
 
+/* concepts */
+
+template <class T>
+concept HasPrint = requires(T obj,std::ostream &out)
+ {
+  obj.print(out);
+ } ;
+
 /* functions */
 
 inline Path CurPath() { return std::filesystem::current_path(); }
@@ -32,6 +41,13 @@ inline Path CurPath() { return std::filesystem::current_path(); }
 inline Path Relative(const Path &path,const Path &base) { return path.lexically_relative(base); }
 
 inline void DestroyDir(const Path &path) { std::filesystem::remove_all(path); }
+
+std::ostream & operator << (std::ostream &out,const HasPrint auto &obj)
+ {
+  obj.print(out);
+
+  return out;
+ }
 
 /* copy functions */
 

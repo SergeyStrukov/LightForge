@@ -14,7 +14,6 @@
 #include <stdexcept>
 #include <cstring>
 
-#include "StdPrint.h"
 #include "Command.h"
 #include "Tools.h"
 

@@ -13,19 +13,17 @@
 
 CC = g++
 
-CCOPT = -std=c++20 -fwrapv -Wall -Wextra
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
 
 SRC = $(wildcard *.cpp)
 
-INC = $(wildcard *.h)
+INC = $(wildcard *.h) $(wildcard ../common/*.h)
 
 TARGET = ../../manager.exe
 
 all: $(TARGET)
 
-$(TARGET) : $(INC)
-
-$(TARGET) : $(SRC)
-	$(CC) $(CCOPT) $^ -o $(TARGET)
+$(TARGET) : $(SRC) $(INC)
+	$(CC) $(CCOPT) $(SRC) -o $(TARGET)
 
 

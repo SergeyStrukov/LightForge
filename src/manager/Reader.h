@@ -18,7 +18,6 @@
 #include <fstream>
 
 #include "Tools.h"
-#include "StdPrint.h"
 
 namespace App {
 
