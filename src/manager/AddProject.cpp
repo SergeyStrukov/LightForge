@@ -118,13 +118,20 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
     }
  }
 
-static void CreateTargetBaselist(const Path &dir,const TargetInfo &target)
+static void CreateTargetBaselist(const Path &dir,const String &projName,const TargetInfo &target)
  {
   std::ofstream out(dir/"BaseList.txt");
 
   for(const BaseSpec &base : target.base )
     {
-     out << base.proj << "." << base.target << "\n" ;
+     if( base.proj.empty() )
+       {
+        out << "../../" << projName << "/" << base.target << "\n" ;
+       }
+     else
+       {
+        out << "../../" << base.proj << "/" << base.target << "\n" ;
+       }
     }
 
   out.close();
@@ -196,7 +203,7 @@ static void AddTarget(const Path &folder,const String &projName,const String &pr
   CreateFolder(dir/"obj");
 
   CreateTargetMakefile(dir,target);
-  CreateTargetBaselist(dir,target);
+  CreateTargetBaselist(dir,projName,target);
   CreateTargetCCpublicOpt(dir,projPath,target);
   CreateTargetCCprivateOpt(dir,projPath,target);
   CreateTargetLDpublicOpt(dir,projName,target);

@@ -24,7 +24,7 @@
 
 namespace App {
 
-using String = std::string;
+using String = std::string ;
 using Path = std::filesystem::path ;
 using Directory = std::filesystem::directory_iterator ;
 
