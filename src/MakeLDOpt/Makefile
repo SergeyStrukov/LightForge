@@ -11,10 +11,21 @@
 #
 #----------------------------------------------------------------------------------------
 
-.PHONY: install
+CC = g++
 
-install:
-	make -C src/manager
-	make -C src/MakeList
-	make -C src/MakeCCopt
-	make -C src/MakeLDopt
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra
+
+SRC = main.cpp
+
+INC = 
+
+TARGET = ../../build/MakeLDopt.exe
+
+all: $(TARGET)
+
+$(TARGET) : $(INC)
+
+$(TARGET) : $(SRC)
+	$(CC) $(CCOPT) $^ -o $(TARGET)
+
+

@@ -115,6 +115,8 @@ int Main(int argc,const char *const*argv)
 
 } // namespace App
 
+/* main() */
+
 int main(int argc,const char *const*argv)
  {
   try

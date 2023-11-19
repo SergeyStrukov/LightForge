@@ -275,6 +275,8 @@ int Main(int argc,const char *argv[])
 
 } // namespace App
 
+/* main() */
+
 int main(int argc,const char *argv[])
  {
   try
