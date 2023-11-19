@@ -15,13 +15,8 @@ RUN_OPT ?=
 
 #-------------------------------------------------------------------------------
 
-# OBJ_LIST =
-# LIB_LIST =
-
-#-------------------------------------------------------------------------------
-
-$(TARGET) : $(OBJ_LIST)
-	$(LD) $(LDOPT) $(OBJ_LIST) $(LDLIB) $(LIB_LIST) -o $@
+$(TARGET) : LD-opt.txt $(OBJ_LIST) 
+	$(LD) $(LDOPT) $(OBJ_LIST) @LD-opt.txt -o $@
 
 .PHONY : run
 

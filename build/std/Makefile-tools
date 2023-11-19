@@ -64,7 +64,5 @@ CCOPT = -c -std=c++20 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall 
 
 LDOPT = -Wl,-s $(LDOPT_EXTRA)
 
-LDLIB = 
-
 #-------------------------------------------------------------------------------
 
