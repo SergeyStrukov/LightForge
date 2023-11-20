@@ -21,9 +21,18 @@ DEP_FILE = $(DEP_PATH)/Makefile-dep
 
 #-------------------------------------------------------------------------------
 
-.PHONY : all list clean dep asm
+.PHONY : deep all list clean dep asm
 
 all: $(TARGET)
+
+ifeq ($(MAKECMDGOALS),deep)
+
+Makefile-deep : ../../../../projects
+	@$(ECHO) "making Makefile-deep..." ; ../../../MakeDeep.exe
+
+include Makefile-deep
+
+endif
 
 #-------------------------------------------------------------------------------
 
@@ -31,10 +40,10 @@ SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
 
 #-------------------------------------------------------------------------------
 
-CC-opt.txt : $(BASE_LIST)
+CC-opt.txt : ../../../../projects
 	@$(ECHO) "making CC-opt..." ; ../../../MakeCCopt.exe
 
-LD-opt.txt : $(BASE_LIST)
+LD-opt.txt : ../../../../projects
 	@$(ECHO) "making LD-opt..." ; ../../../MakeLDopt.exe
 
 #-------------------------------------------------------------------------------

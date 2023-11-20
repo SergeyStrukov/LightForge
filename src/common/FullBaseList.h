@@ -74,6 +74,7 @@ class FullBaseList
 
    void buildCCopt();
    void buildLDopt();
+   void buildMakeDeep();
  };
 
 } // namespace App
