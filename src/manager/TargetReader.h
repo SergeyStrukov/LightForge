@@ -23,7 +23,8 @@ namespace App {
 enum TargetKind
  {
   TargetLib,
-  TargetExe
+  TargetExe,
+  TargetPregen
  };
 
 /* classes */

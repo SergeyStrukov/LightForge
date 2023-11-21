@@ -132,6 +132,10 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
     {
      kind=TargetLib;
     }
+  else if( t1.text=="pregen" )
+    {
+     kind=TargetPregen;
+    }
   else
     {
      std::cout << "File " << fileName << t1.pos << " : unknown target kind" << std::endl ;

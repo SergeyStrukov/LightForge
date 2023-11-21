@@ -27,6 +27,10 @@ AR_ = ar
 
 RM_ = rm -f
 
+DATE_ = /usr/bin/date
+
+MKDIR_ = mkdir -p
+
 #-------------------------------------------------------------------------------
 
 CAT = @$(ECHO) CAT ; $(CAT_)
@@ -38,6 +42,10 @@ LD = @$(ECHO) LD $@ ; $(CC_)
 AR = @$(ECHO) AR $@ ; $(AR_)
 
 RM = @$(ECHO) RM ; $(RM_)
+
+DATE = @$(ECHO) DATE ; $(DATE_)
+
+MKDIR = @$(ECHO) MKDIR ; $(MKDIR_)
 
 # options ----------------------------------------------------------------------
 

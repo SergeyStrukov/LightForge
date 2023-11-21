@@ -1,0 +1,22 @@
+# Makefile-pregen
+#-------------------------------------------------------------------------------
+#
+#  Project: LightForge 1.00
+#
+#  License: Boost Software License - Version 1.0 - August 17th, 2003
+#
+#            see http://www.boost.org/LICENSE_1_0.txt or the local copy
+#
+#  Copyright (c) 2023 Sergey Strukov. All rights reserved.
+#
+#-------------------------------------------------------------------------------
+
+pregen.exe : LD-opt.txt $(OBJ_LIST) 
+	$(LD) $(LDOPT) $(OBJ_LIST) @LD-opt.txt -o $@
+
+$(TARGET) : pregen.exe 
+	$(MKDIR) $(RUN_OPT)
+	@$(ECHO) run pregen ; ./pregen.exe $(RUN_OPT)
+	$(DATE) > $(TARGET)
+
+#-------------------------------------------------------------------------------

@@ -94,19 +94,31 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
 
   out << "TARGET_PATH = " << target.path.native() << "\n\n" ;
 
-  out << "TARGET = " << target.outName << "\n\n" ;
-
   switch( target.kind )
     {
      case TargetLib :
       {
+       out << "TARGET = " << target.outName << "\n\n" ;
+
        out << "TARGET_BUILD = Makefile-ar\n\n" ;
       }
      break;
 
      case TargetExe :
       {
+       out << "TARGET = " << target.outName << "\n\n" ;
+
        out << "TARGET_BUILD = Makefile-exe\n\n" ;
+      }
+     break;
+
+     case TargetPregen :
+      {
+       out << "TARGET = pregen-time.txt\n\n" ;
+
+       out << "RUN_OPT = ../$(PROJECT_PATH)/$(TARGET_PATH)/" << target.outName << "\n\n" ;
+
+       out << "TARGET_BUILD = Makefile-pregen\n\n" ;
       }
      break;
     }
