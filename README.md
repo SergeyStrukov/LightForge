@@ -7,8 +7,8 @@ del <path> ( <build> )* // empty list = all
 Build/Project/Target /obj /dep
 
 *.a
-*.exe | loader *.exe
-pregen *.exe -> file
+*.exe
+pregen.exe -> file
 
 ## PROJECT
 
@@ -22,7 +22,7 @@ name: name1 ... nameN
 
 // target names   target OR proj.target
 
-OUT = name
+OUT = file-name OR pregen-path
 
 SRC = dir1 ... dirN
 

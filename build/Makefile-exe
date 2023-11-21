@@ -21,6 +21,6 @@ $(TARGET) : LD-opt.txt $(OBJ_LIST)
 .PHONY : run
 
 run: $(TARGET)
-	$(TARGET) $(RUN_OPT)
+	./$(TARGET) $(RUN_OPT)
 
 #-------------------------------------------------------------------------------
