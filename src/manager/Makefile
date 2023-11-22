@@ -17,7 +17,7 @@ CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
 
 SRC = $(wildcard *.cpp)
 
-INC = $(wildcard *.h) $(wildcard ../common/*.h)
+INC = $(wildcard *.h) ../common/Tools.h
 
 TARGET = ../../manager.exe
 
