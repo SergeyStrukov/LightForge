@@ -239,7 +239,7 @@ void FileList::print(std::ostream &out) const
 
 /* Main() */
 
-int Main(int argc,const char *argv[])
+int Main(int argc,const char *const*argv)
  {
   std::cout << "LightForge MakeList 1.00" << std::endl ;
   std::cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << std::endl << std::endl ;
@@ -273,7 +273,7 @@ int Main(int argc,const char *argv[])
 
 /* main() */
 
-int main(int argc,const char *argv[])
+int main(int argc,const char *const*argv)
  {
   try
     {

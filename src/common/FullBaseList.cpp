@@ -61,7 +61,7 @@ String FullBaseList::GetSelf()
 
 void FullBaseList::Append(std::ostream &out,const String &fileName)
  {
-  std::ifstream inp(fileName,std::ios::binary);
+  std::ifstream inp(fileName);
 
   if( !inp.is_open() )
     {
@@ -112,7 +112,7 @@ FullBaseList::~FullBaseList()
 
 void FullBaseList::buildCCopt()
  {
-  std::ofstream out("CC-opt.txt",std::ios::binary);
+  std::ofstream out("CC-opt.txt");
 
   Append(out,"CCprivate-opt.txt");
 
@@ -131,7 +131,7 @@ void FullBaseList::buildCCopt()
 
 void FullBaseList::buildLDopt()
  {
-  std::ofstream out("LD-opt.txt",std::ios::binary);
+  std::ofstream out("LD-opt.txt");
 
   out << "-Wl,--start-group\n" ;
 
