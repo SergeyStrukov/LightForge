@@ -37,7 +37,7 @@ class PrintList
 
 static void CreateFolder(const Path &folder)
  {
-  if( !std::filesystem::create_directory(folder) )
+  if( !CreateDir(folder) )
     {
      std::cout << "Cannot create folder " << folder << std::endl ;
 
@@ -220,6 +220,11 @@ static void AddTarget(const Path &folder,const String &projName,const String &pr
   CreateFolder(dir/"asm");
   CreateFolder(dir/"dep");
   CreateFolder(dir/"obj");
+
+  if( target.kind==TargetExe )
+    {
+     CreateFolder(dir/"out");
+    }
 
   CreateTargetMakefile(dir,target);
   CreateTargetBaselist(dir,projName,target);

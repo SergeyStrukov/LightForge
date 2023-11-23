@@ -1,9 +1,13 @@
 # LightForge
 
+**LightForge** is a simple, but powerful **C++** build system.
+It uses only **C++ compiler** and standard **make** utility to work atop them.
+This build system can be used on **Linux** or **cygwin** platform.
+
 ```
 
-add <path> ( <build> )* // empty list = std
-del <path> ( <build> )* // empty list = all
+manager.exe add <path> ( <build> )* // empty list = std
+manager.exe del <path> ( <build> )* // empty list = all
 
 Build/Project/Target /obj /dep /asm
 

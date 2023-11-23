@@ -35,6 +35,7 @@ class Opt
   private:
 
    Opt(const Opt &) = delete ;
+
    Opt & operator = (const Opt &) = delete ;
 
    static bool TestStr(const char *str1,const char *str2)
@@ -56,49 +57,55 @@ class Opt
 
   public:
 
-   Opt(int argc,const char *const*argv)
-    {
-     if( argc<3 )
-       {
-        throw std::runtime_error("bad argument's number");
-       }
+   Opt(int argc,const char *const*argv);
 
-     self=argv[0];
-     add=Command(argv[1]);
-     path=argv[2];
-     build=argv+3;
-     buildCount=argc-3;
-    }
+   int commit();
 
-   void print(std::ostream &out) const
-    {
-     out << "self: " << self << std::endl ;
-     out << "wdir: " << curpath.c_str() << std::endl ;
-     out << (add? "add":"del") << std::endl ;
-     out << "path: " << path << std::endl ;
-
-     for(int i=0; i<buildCount ;i++)
-       {
-        out << "   build: " << build[i] << std::endl ;
-       }
-    }
-
-   int commit()
-    {
-     Path forge=Path(self).parent_path();
-
-     if( add )
-       {
-        AddProject(curpath,forge,path,build,buildCount);
-       }
-     else
-       {
-        DelProject(curpath,forge,path,build,buildCount);
-       }
-
-     return 0;
-    }
+   void print(std::ostream &out) const;
  };
+
+Opt::Opt(int argc,const char *const*argv)
+ {
+  if( argc<3 )
+    {
+     throw std::runtime_error("bad argument's number");
+    }
+
+  self=argv[0];
+  add=Command(argv[1]);
+  path=argv[2];
+  build=argv+3;
+  buildCount=argc-3;
+ }
+
+void Opt::print(std::ostream &out) const
+ {
+  out << "self: " << self << std::endl ;
+  out << "wdir: " << curpath.c_str() << std::endl ;
+  out << (add? "add":"del") << std::endl ;
+  out << "path: " << path << std::endl ;
+
+  for(int i=0; i<buildCount ;i++)
+    {
+     out << "   build: " << build[i] << std::endl ;
+    }
+ }
+
+int Opt::commit()
+ {
+  Path forge=Path(self).parent_path();
+
+  if( add )
+    {
+     AddProject(curpath,forge,path,build,buildCount);
+    }
+  else
+    {
+     DelProject(curpath,forge,path,build,buildCount);
+    }
+
+  return 0;
+ }
 
 /* Main() */
 
