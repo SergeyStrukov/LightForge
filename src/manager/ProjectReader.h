@@ -33,6 +33,7 @@ class ProjectReader
   private:
 
    ProjectReader(const ProjectReader &) = delete ;
+
    ProjectReader & operator = (const ProjectReader &) = delete ;
 
   public:
@@ -67,6 +68,7 @@ class ProjectListReader
   private:
 
    ProjectListReader(const ProjectListReader &) = delete ;
+
    ProjectListReader & operator = (const ProjectListReader &) = delete ;
 
    void warnBaseMissing(const String &projName);

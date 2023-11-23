@@ -101,6 +101,8 @@ bool ProjectListReader::findProjName(const String &projName) const
 
 ProjectListReader::ProjectListReader(const String &fileName)
  {
+  if( !PathExists(fileName) ) return;
+
   list.reserve(1000);
 
   FileReader inp(fileName);
