@@ -50,7 +50,7 @@ void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
        }
     }
 
-  String infoFile=forge/"projects";
+  String infoFile=forge/"PROJECTS";
 
   ProjectListReader info(infoFile);
 

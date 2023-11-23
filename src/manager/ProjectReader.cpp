@@ -247,7 +247,7 @@ void ProjectListReader::save(const String &fileName) const
 
   if( !out )
     {
-     throw std::runtime_error("saving 'projects' error");
+     throw std::runtime_error("saving 'PROJECTS' error");
     }
  }
 

@@ -256,7 +256,7 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
      buildCount=1;
     }
 
-  String infoFile=forge/"projects";
+  String infoFile=forge/"PROJECTS";
 
   ProjectListReader info(infoFile);
 
