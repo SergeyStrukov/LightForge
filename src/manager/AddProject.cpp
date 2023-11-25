@@ -109,6 +109,8 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "TARGET = " << target.outName << "\n\n" ;
 
        out << "TARGET_BUILD = Makefile-exe\n\n" ;
+
+       out << "-include ../$(PROJECT_PATH)/$(TARGET_PATH)/Makefile-runopt\n\n" ;
       }
      break;
 
