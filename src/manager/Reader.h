@@ -126,6 +126,7 @@ class CharTable
   private:
 
    CharTable(const CharTable &) = delete ;
+
    CharTable & operator = (const CharTable &) = delete ;
 
    static uint8_t Index(char ch) { return (uint8_t)ch; }
@@ -159,6 +160,7 @@ class ScanFile
   private:
 
    ScanFile(const ScanFile &) = delete ;
+
    ScanFile & operator = (const ScanFile &) = delete ;
 
    static constexpr unsigned Len = 128 ;
@@ -200,6 +202,7 @@ class FileReader : ScanFile
   private:
 
    FileReader(const FileReader &) = delete ;
+
    FileReader & operator = (const FileReader &) = delete ;
 
    class Builder;
