@@ -15,6 +15,7 @@
 #define ProjectReader_h
 
 #include <set>
+#include <map>
 
 #include "Reader.h"
 
@@ -55,17 +56,16 @@ class ProjectListReader
  {
    struct Rec
     {
-     String name;
      std::set<String> base;
 
-     Rec(String &&name,const std::vector<String> &base);
+     explicit Rec(const std::vector<String> &base);
 
      bool findBaseName(const String &projName) const;
 
      void print(std::ostream &out) const;
     };
 
-   std::vector<Rec> list;
+   std::map<String,Rec> list;
 
   private:
 

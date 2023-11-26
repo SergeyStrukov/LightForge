@@ -67,9 +67,8 @@ ProjectReader::~ProjectReader()
 
 /* class ProjectListReader */
 
-ProjectListReader::Rec::Rec(String &&name_,const std::vector<String> &base_)
- : name(std::move(name_)),
-   base(base_.begin(),base_.end())
+ProjectListReader::Rec::Rec(const std::vector<String> &base_)
+ : base(base_.begin(),base_.end())
  {
  }
 
@@ -82,31 +81,31 @@ void ProjectListReader::warnBaseMissing(const String &projName)
  {
   for(const auto &rec : list )
     {
-     if( rec.findBaseName(projName) )
+     if( rec.second.findBaseName(projName) )
        {
-        std::cout << "Project " << rec.name << " lost the base " << projName << std::endl ;
+        std::cout << "Project " << rec.first << " lost the base " << projName << std::endl ;
        }
     }
  }
 
 void ProjectListReader::append(String &&projName,const std::vector<String> &base)
  {
-  list.emplace_back(std::move(projName),base);
+  bool ok=list.insert(std::make_pair(std::move(projName),base)).second;
+
+  if( !ok )
+    {
+     throw std::runtime_error("cannot add project");
+    }
  }
 
-bool ProjectListReader::findProjName(const String &projName) const // TODO optimize
+bool ProjectListReader::findProjName(const String &projName) const
  {
-  auto beg=list.begin();
-  auto end=list.end();
-
-  return std::find_if(beg,end, [&] (const Rec &obj) { return obj.name==projName; } ) != end ;
+  return list.find(projName)!=list.end();
  }
 
 ProjectListReader::ProjectListReader(const String &fileName)
  {
   if( !PathExists(fileName) ) return;
-
-  list.reserve(1000);
 
   FileReader inp(fileName);
 
@@ -226,18 +225,17 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
   append(String(projName),baseList);
  }
 
-void ProjectListReader::delProject(const String &projName) // TODO optimize
+void ProjectListReader::delProject(const String &projName)
  {
-  for(auto ptr=list.begin(),end=list.end(); ptr!=end ;++ptr)
+  auto ptr=list.find(projName);
+
+  if( ptr!=list.end() )
     {
-     if( ptr->name==projName )
-       {
-        list.erase(ptr);
+     list.erase(ptr);
 
-        warnBaseMissing(projName);
+     warnBaseMissing(projName);
 
-        return;
-       }
+     return;
     }
 
   std::cout << "There is no project " << projName << std::endl ;
@@ -245,8 +243,6 @@ void ProjectListReader::delProject(const String &projName) // TODO optimize
 
 void ProjectListReader::Rec::print(std::ostream &out) const
  {
-  out << name << ": " ;
-
   for(const String &x : base )
     {
      out << x << " " ;
@@ -259,9 +255,9 @@ void ProjectListReader::save(const String &fileName) const
 
   out.exceptions(std::ofstream::badbit);
 
-  for(const Rec &rec : list )
+  for(const auto &rec : list )
     {
-     out << rec << "\n" ;
+     out << rec.first << ": " << rec.second << "\n" ;
     }
 
   out.close();
