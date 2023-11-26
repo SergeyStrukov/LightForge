@@ -67,12 +67,15 @@ ProjectReader::~ProjectReader()
 
 /* class ProjectListReader */
 
+ProjectListReader::Rec::Rec(String &&name_,const std::vector<String> &base_)
+ : name(std::move(name_)),
+   base(base_.begin(),base_.end())
+ {
+ }
+
 bool ProjectListReader::Rec::findBaseName(const String &projName) const
  {
-  auto beg=base.begin();
-  auto end=base.end();
-
-  return std::find_if(beg,end, [&] (const String &obj) { return obj==projName; } ) != end ;
+  return base.find(projName)!=base.end();
  }
 
 void ProjectListReader::warnBaseMissing(const String &projName)
@@ -86,12 +89,12 @@ void ProjectListReader::warnBaseMissing(const String &projName)
     }
  }
 
-void ProjectListReader::append(String &&projName,std::vector<String> &&base)
+void ProjectListReader::append(String &&projName,const std::vector<String> &base)
  {
-  list.emplace_back(std::move(projName),std::move(base));
+  list.emplace_back(std::move(projName),base);
  }
 
-bool ProjectListReader::findProjName(const String &projName) const
+bool ProjectListReader::findProjName(const String &projName) const // TODO optimize
  {
   auto beg=list.begin();
   auto end=list.end();
@@ -176,6 +179,22 @@ ProjectListReader::ProjectListReader(const String &fileName)
         t1=std::move(t3);
         base={};
         base.reserve(100);
+
+        t3=inp.nextValuable();
+
+        if( !t3 )
+          {
+           append(std::move(t1.text),std::move(base));
+
+           return;
+          }
+
+        if( t3.kind!=TokenName )
+          {
+           std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
+
+           throw std::runtime_error("file processing error");
+          }
        }
     }
 
@@ -204,10 +223,10 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
        throw std::runtime_error("cannot install project");
       }
 
-  append(String(projName),std::vector<String>(baseList));
+  append(String(projName),baseList);
  }
 
-void ProjectListReader::delProject(const String &projName)
+void ProjectListReader::delProject(const String &projName) // TODO optimize
  {
   for(auto ptr=list.begin(),end=list.end(); ptr!=end ;++ptr)
     {

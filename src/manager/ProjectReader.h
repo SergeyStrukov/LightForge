@@ -14,6 +14,8 @@
 #ifndef ProjectReader_h
 #define ProjectReader_h
 
+#include <set>
+
 #include "Reader.h"
 
 namespace App {
@@ -54,9 +56,9 @@ class ProjectListReader
    struct Rec
     {
      String name;
-     std::vector<String> base;
+     std::set<String> base;
 
-     Rec(String &&name_,std::vector<String> &&base_) : name(std::move(name_)),base(std::move(base_)) {}
+     Rec(String &&name,const std::vector<String> &base);
 
      bool findBaseName(const String &projName) const;
 
@@ -73,7 +75,7 @@ class ProjectListReader
 
    void warnBaseMissing(const String &projName);
 
-   void append(String &&projName,std::vector<String> &&base);
+   void append(String &&projName,const std::vector<String> &base);
 
    bool findProjName(const String &projName) const;
 
