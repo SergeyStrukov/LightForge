@@ -27,7 +27,7 @@ all: $(TARGET)
 
 ifeq ($(MAKECMDGOALS),deep)
 
-Makefile-deep : ../../../../PROJECTS
+Makefile-deep : ../../PROJECTS
 	@$(ECHO) "making Makefile-deep..." ; ../../../MakeDeep.exe
 
 include Makefile-deep
@@ -40,10 +40,10 @@ SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
 
 #-------------------------------------------------------------------------------
 
-CC-opt.txt : ../../../../PROJECTS
+CC-opt.txt : ../../PROJECTS
 	@$(ECHO) "making CC-opt..." ; ../../../MakeCCopt.exe
 
-LD-opt.txt : ../../../../PROJECTS
+LD-opt.txt : ../../PROJECTS
 	@$(ECHO) "making LD-opt..." ; ../../../MakeLDopt.exe
 
 #-------------------------------------------------------------------------------
