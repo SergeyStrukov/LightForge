@@ -235,8 +235,14 @@ static void AddTarget(const Path &folder,const String &projName,const String &pr
   CreateTargetLDpublicOpt(dir,projName,target);
  }
 
-static void AddProject(const Path &forge,const char *build,const String &projName,Path projRoot,const std::vector<TargetReader> &targets)
+static void AddProject(const Path &forge,const char *build,const String &projName,Path projRoot,const std::vector<String> &baseList,const std::vector<TargetReader> &targets)
  {
+  String infoFile=forge/"build"/build/"PROJECTS";
+
+  ProjectListReader info(infoFile);
+
+  info.addProject(projName,baseList);
+
   Path folder=forge/"build"/build/projName;
 
   CreateFolder(folder);
@@ -251,6 +257,8 @@ static void AddProject(const Path &forge,const char *build,const String &projNam
     {
      AddTarget(folder,projName,projPath,target.getInfo());
     }
+
+  info.save(infoFile);
  }
 
 void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int buildCount)
@@ -263,10 +271,6 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
      buildCount=1;
     }
 
-  String infoFile=forge/"PROJECTS";
-
-  ProjectListReader info(infoFile);
-
   Path projRoot=std::filesystem::canonical(curpath/proj);
 
   ProjectReader inp(projRoot/"PROJECT");
@@ -278,14 +282,10 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
 
   targets.checkBases(baseList);
 
-  info.addProject(projName,baseList);
-
   for(int ind=0; ind<buildCount ;ind++)
     {
-     AddProject(forge,build[ind],projName,projRoot,targets.getList());
+     AddProject(forge,build[ind],projName,projRoot,baseList,targets.getList());
     }
-
-  info.save(infoFile);
  }
 
 } // namespace App

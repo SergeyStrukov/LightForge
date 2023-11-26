@@ -22,6 +22,14 @@ static void DelProjectFolder(const Path &forge,S build,const String &projName)
   Path folder=forge/"build"/build/projName;
 
   DestroyDir(folder);
+
+  String infoFile=forge/"build"/build/"PROJECTS";
+
+  ProjectListReader info(infoFile);
+
+  info.delProject(projName);
+
+  info.save(infoFile);
  }
 
 void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int buildCount)
@@ -49,14 +57,6 @@ void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
           }
        }
     }
-
-  String infoFile=forge/"PROJECTS";
-
-  ProjectListReader info(infoFile);
-
-  info.delProject(projName);
-
-  info.save(infoFile);
  }
 
 } // namespace App
