@@ -219,6 +219,12 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
 
         flag=false;
        }
+     else if( t2.kind==TokenNull )
+       {
+        std::cout << "File " << fileName << t2.pos << " : unexpected end of content" << std::endl ;
+
+        throw std::runtime_error("file processing error");
+       }
     }
 
   // 2
@@ -291,7 +297,7 @@ TargetListReader::TargetListReader(const Path &projRoot)
 
      Path fileName=path/"TARGET";
 
-     if( std::filesystem::is_regular_file(fileName) )
+     if( isRegularFile(fileName) )
        {
         list.emplace_back(Relative(path,projRoot),fileName);
        }

@@ -247,7 +247,7 @@ static void AddProject(const Path &forge,const char *build,const String &projNam
 
   CreateFolder(folder);
 
-  Path projPath=Relative(projRoot,std::filesystem::canonical(folder));
+  Path projPath=Relative(projRoot,toCanonical(folder));
 
   CreateProjectMakefile(folder,projPath);
 
@@ -271,7 +271,7 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
      buildCount=1;
     }
 
-  Path projRoot=std::filesystem::canonical(curpath/proj);
+  Path projRoot=toCanonical(curpath/proj);
 
   ProjectReader inp(projRoot/"PROJECT");
 

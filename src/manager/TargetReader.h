@@ -75,6 +75,7 @@ class TargetReader : TargetInfo
   private:
 
    TargetReader(const TargetReader &) = delete ;
+
    TargetReader & operator = (const TargetReader &) = delete ;
 
    void apply(String &&key,std::vector<String> &&list,const Path &fileName,TextPos pos);
@@ -86,6 +87,7 @@ class TargetReader : TargetInfo
    ~TargetReader();
 
    TargetReader(TargetReader &&) = default ;
+
    TargetReader & operator = (TargetReader &&) = default ;
 
    const TargetInfo & getInfo() const { return *this; }
@@ -100,6 +102,7 @@ class TargetListReader
   private:
 
    TargetListReader(const TargetListReader &) = delete ;
+
    TargetListReader & operator = (const TargetListReader &) = delete ;
 
   public:

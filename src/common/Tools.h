@@ -38,6 +38,10 @@ concept HasPrint = requires(T obj,std::ostream &out)
 
 inline bool PathExists(const Path &path) { return std::filesystem::exists(path); }
 
+inline bool isRegularFile(const Path &path) { return std::filesystem::is_regular_file(path); }
+
+inline Path toCanonical(const Path &path) { return std::filesystem::canonical(path); }
+
 inline Path CurPath() { return std::filesystem::current_path(); }
 
 inline Path Relative(const Path &path,const Path &base) { return path.lexically_relative(base); }

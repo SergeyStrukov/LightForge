@@ -9,7 +9,7 @@ This build system can be used on **Linux** or **cygwin** platform.
 manager.exe add <path> ( <build> )* // empty list = std
 manager.exe del <path> ( <build> )* // empty list = all
 
-Build/Project/Target /obj /dep /asm
+Build/Project/Target /obj /dep /asm /out
 
 *.a
 *.exe
