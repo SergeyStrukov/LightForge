@@ -162,7 +162,7 @@ void FullBaseList::buildMakeDeep()
     {
      const String &str=list[ind];
 
-     out << "\tmake -C " << str << "\n" ;
+     out << "\t$(MAKE) -C " << str << "\n" ;
     }
 
   out.close();

@@ -73,7 +73,7 @@ static void CreateMakefile(const Path &folder,const std::vector<TargetReader> &t
 
      out << ".PHONY: " << name << "\n\n" ;
      out << name << ":\n" ;
-     out << "\tmake -C " << name << " deep\n\n" ;
+     out << "\t$(MAKE) -C " << name << " deep\n\n" ;
     }
 
   out.close();
