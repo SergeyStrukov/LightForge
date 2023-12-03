@@ -14,6 +14,8 @@
 #ifndef TargetReader_h
 #define TargetReader_h
 
+#include <set>
+
 #include "Reader.h"
 
 namespace App {
@@ -98,6 +100,7 @@ class TargetReader : TargetInfo
 class TargetListReader
  {
    std::vector<TargetReader> list;
+   std::set<String> targetNameSet;
 
   private:
 
@@ -112,6 +115,8 @@ class TargetListReader
    ~TargetListReader();
 
    const std::vector<TargetReader> & getList() const { return list; }
+
+   const std::set<String> & getNameSet() const { return targetNameSet; }
 
    void checkBases(const std::vector<String> &baseList) const;
  };

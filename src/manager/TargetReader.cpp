@@ -330,6 +330,11 @@ TargetListReader::TargetListReader(const Path &projRoot)
           }
        }
     }
+
+  for(const TargetReader &obj: list )
+    {
+     targetNameSet.insert(obj.getInfo().name);
+    }
  }
 
 TargetListReader::~TargetListReader()

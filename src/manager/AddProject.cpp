@@ -139,7 +139,29 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
     }
  }
 
-static void CreateTargetBaselist(const Path &dir,const String &projName,const TargetInfo &target)
+static void CheckBase(const Path &buildDir,const String &proj,const String &target)
+ {
+  Path path=buildDir/proj/target;
+
+  if( !PathExists(path) )
+    {
+     std::cout << "Base target " << proj << "." << target << " does not exist" << std::endl ;
+
+     throw std::runtime_error("Bad base target");
+    }
+ }
+
+static void CheckBase(const String &target,const std::set<String> &nameSet)
+ {
+  if( nameSet.find(target)==nameSet.end() )
+    {
+     std::cout << "Base target " << target << " does not exist" << std::endl ;
+
+     throw std::runtime_error("Bad base target");
+    }
+ }
+
+static void CreateTargetBaselist(const Path &buildDir,const Path &dir,const String &projName,const TargetInfo &target,const std::set<String> &nameSet)
  {
   std::ofstream out(dir/"BaseList.txt");
 
@@ -147,10 +169,14 @@ static void CreateTargetBaselist(const Path &dir,const String &projName,const Ta
     {
      if( base.proj.empty() )
        {
+        CheckBase(base.target,nameSet);
+
         out << "../../" << projName << "/" << base.target << "\n" ;
        }
      else
        {
+        CheckBase(buildDir,base.proj,base.target);
+
         out << "../../" << base.proj << "/" << base.target << "\n" ;
        }
     }
@@ -214,7 +240,7 @@ static void CreateTargetLDpublicOpt(const Path &dir,const String &projName,const
     }
  }
 
-static void AddTarget(const Path &folder,const String &projName,const String &projPath,const TargetInfo &target)
+static void AddTarget(const Path &buildDir,const Path &folder,const String &projName,const String &projPath,const TargetInfo &target,const std::set<String> &nameSet)
  {
   Path dir=folder/target.name;
 
@@ -229,21 +255,22 @@ static void AddTarget(const Path &folder,const String &projName,const String &pr
     }
 
   CreateTargetMakefile(dir,target);
-  CreateTargetBaselist(dir,projName,target);
+  CreateTargetBaselist(buildDir,dir,projName,target,nameSet);
   CreateTargetCCpublicOpt(dir,projPath,target);
   CreateTargetCCprivateOpt(dir,projPath,target);
   CreateTargetLDpublicOpt(dir,projName,target);
  }
 
-static void AddProject(const Path &forge,const char *build,const String &projName,Path projRoot,const std::vector<String> &baseList,const std::vector<TargetReader> &targets)
+static void AddProject(const Path &forge,const char *build,const String &projName,Path projRoot,const std::vector<String> &baseList,const std::vector<TargetReader> &targets,const std::set<String> &nameSet)
  {
-  String infoFile=forge/"build"/build/"PROJECTS";
+  Path buildDir=forge/"build"/build;
+  String infoFile=buildDir/"PROJECTS";
 
   ProjectListReader info(infoFile);
 
   info.addProject(projName,baseList);
 
-  Path folder=forge/"build"/build/projName;
+  Path folder=buildDir/projName;
 
   CreateFolder(folder);
 
@@ -255,7 +282,7 @@ static void AddProject(const Path &forge,const char *build,const String &projNam
 
   for(const TargetReader &target : targets )
     {
-     AddTarget(folder,projName,projPath,target.getInfo());
+     AddTarget(buildDir,folder,projName,projPath,target.getInfo(),nameSet);
     }
 
   info.save(infoFile);
@@ -284,7 +311,7 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
 
   for(int ind=0; ind<buildCount ;ind++)
     {
-     AddProject(forge,build[ind],projName,projRoot,baseList,targets.getList());
+     AddProject(forge,build[ind],projName,projRoot,baseList,targets.getList(),targets.getNameSet());
     }
  }
 
