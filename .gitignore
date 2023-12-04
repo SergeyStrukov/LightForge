@@ -3,5 +3,6 @@
 *.a
 *.exe
 **/std/**
+**/stdwin/**
 PROJECTS
 **/.*/**
