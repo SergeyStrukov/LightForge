@@ -29,8 +29,27 @@ TestForge: TestForgeLib
 Description consists of the *ProjectName*, then colon follows, then the list of base projects.
 Each project inside **LightForge** is identified by its *ProjectName*. It must be a C-name.
 Each project name must be unique.
-Each project has a list of base projects: each base project contributes to the main project.
+Each project has a list of base projects: each base project contributes to the target project.
 Cyclic dependencies among projects are not allowed.
+It is a good practise provide the file *Makefile* along with the file *PROJECT* with the following content:
+```
+# Makefile
+
+LIGHT_FORGE ?= ~/LightForge
+
+.PHONY: install delete
+
+install:
+	@$(LIGHT_FORGE)/manager.exe add . std
+
+delete:
+	@$(LIGHT_FORGE)/manager.exe del .
+```
+Use it to install the project to or delete it from the **LightForge**:
+```
+...>make [install]
+...>make delete
+```
 
 ### Targets
 
@@ -38,7 +57,7 @@ Cyclic dependencies among projects are not allowed.
 
 ## LightForge side
 
-All build activities are performed inside the **LightForge** folder.
+All build activities happen inside the **LightForge** folder.
 
 ### Build
 
@@ -70,7 +89,7 @@ Build the target without base targets:
 ```
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make [all]
 ```
-Build the target with base targets (deep build):
+Build the target **with** base targets (deep build):
 ```
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make deep
 ```
@@ -93,13 +112,24 @@ Clean dependency files (to rebuild them):
 
 #### Library targets
 
-*TODO*
+Building the library target creates the library out file in the target folder.
 
 #### Executable targets
 
-*TODO*
+Building the executable target creates the executable out file in the target folder.
+There is a special goal in the target makefile:
+```
+/home/user/LightForge/build/BuildName/ProjectName/TargetName>make run
+```
+It runs the built executable.
+You may specify arguments for this run inside the **source** target folder (alone with the file TARGET) in the file *Makefile-runopt*.
+```
+RUN_OPT = arg1 arg2 arg3
+```
 
 #### Pregen targets
 
-*TODO*
+Building the pregen target creates the executable file *pregen.exe* in the target folder, then runs it with the argument *pregen-folder*.
+After all, the file *pregen-file.txt* with timestamp is created in the target folder.
+
 
