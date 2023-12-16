@@ -31,7 +31,7 @@ Each project inside **LightForge** is identified by its *ProjectName*. It must b
 Each project name must be unique.
 Each project has a list of base projects: each base project contributes to the target project.
 Cyclic dependencies among projects are not allowed.
-It is a good practise provide the file *Makefile* along with the file *PROJECT* with the following content:
+It is a good practise provide the file *Makefile* along with the file *PROJECT* with the following content (or similar):
 ```
 # Makefile
 
@@ -53,7 +53,86 @@ Use it to install the project to or delete it from the **LightForge**:
 
 ### Targets
 
-*TODO*
+When you install a project, the **LightForge** manager scans recursively the project folder subfolders in search for targets.
+Target is defined by the file *TARGET* in some subfolder.
+Here is an example of the content:
+```
+exe test: TestForgeLib.lib1 TestForgeLib.lib2 testPregen
+
+OUT = test.exe
+
+SRC = .
+
+INC = .
+```
+Target has a *type*. There are 3 target types: library, executable, pregen.
+Target has a *name*, it must be a C-name, and must be unique inside the project.
+Target has a *base target list*. This list may contain current project targets as well as another project targets.
+In the last case the target name is given in the form *ProjectName.TargetName*.
+Targets inside the same project MAY have cyclic dependencies.
+
+#### Library targets
+
+Library target is to build a library.
+Target file looks like:
+```
+lib TargetName: target1 target2 ...
+
+OUT = LibFileName
+
+SRC = dir1 dir2 ...
+
+[INC = dir1 dir2 ...]
+
+[INC_PRIVATE = dir1 dir2 ...]
+
+```
+It starts with the target type **lib**, then TargetName follows, then colon follows, then the list of base targets.
+OUT defines the library file name to build.
+SRC defines the list of source folders. All *.cpp files in these folders and its subfolders comprise the source file set.
+INC and INC_PRIVATE are optional folder lists. They are used to lookup for header files during compilation.
+The difference between them is: INC folders are propagated to the dependent targets.
+All relative pathes here are base on the *TARGET* folder.
+
+#### Executable targets
+
+Executable target is to build an executable file.
+Target file looks like:
+```
+exe TargetName: target1 target2 ...
+
+OUT = ExeFileName
+
+SRC = dir1 dir2 ...
+
+[INC = dir1 dir2 ...]
+
+[INC_PRIVATE = dir1 dir2 ...]
+
+```
+It starts with the target type **exe**.
+OUT defines the executable file name to build.
+
+#### Pregen targets
+
+Pregen target is to build an executable file and use it to generate some output.
+Target file looks like:
+```
+pregen TargetName: target1 target2 ...
+
+OUT = PregenDir
+
+SRC = dir1 dir2 ...
+
+[INC = dir1 dir2 ...]
+
+[INC_PRIVATE = dir1 dir2 ...]
+
+```
+It starts with the target type **pregen**.
+OUT defines the folder where pregen should place the output files.
+It is passed to *pregen.exe* (modified to count base directory change).
+You may choose to use *INC_PRIVATE* list for such target to avoid anwanted include folder propagation.
 
 ## LightForge side
 
