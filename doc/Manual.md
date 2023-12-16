@@ -65,7 +65,7 @@ SRC = .
 
 INC = .
 ```
-Target has a *type*. There are 3 target types: library, executable, pregen.
+Target has a *type*. There are 3 target types: *library*, *executable*, *pregen*.
 Target has a *name*, it must be a C-name, and must be unique inside the project.
 Target has a *base target list*. This list may contain current project targets as well as another project targets.
 In the last case the target name is given in the form *ProjectName.TargetName*.
@@ -92,7 +92,8 @@ OUT defines the library file name to build.
 SRC defines the list of source folders. All *.cpp files in these folders and its subfolders comprise the source file set.
 INC and INC_PRIVATE are optional folder lists. They are used to lookup for header files during compilation.
 The difference between them is: INC folders are propagated to the dependent targets.
-All relative pathes here are base on the *TARGET* folder.
+Built library is propagated to dependent exe and pregen targets.
+All relative pathes here are based on the *TARGET* folder.
 
 #### Executable targets
 
