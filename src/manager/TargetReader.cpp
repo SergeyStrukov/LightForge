@@ -163,7 +163,7 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
      throw std::runtime_error("file processing error");
     }
 
-  base.reserve(100);
+  base.reserve(BaseReserve);
 
   bool flag=true;
 
@@ -231,7 +231,7 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
 
   std::vector<String> list;
 
-  list.reserve(100);
+  list.reserve(BaseReserve);
 
   Token s1=inp.nextString();
 
@@ -254,7 +254,7 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
         apply(std::move(t1.text),std::move(list),fileName,t1.pos);
         t1=std::move(s1);
         list={};
-        list.reserve(100);
+        list.reserve(BaseReserve);
         s1=inp.nextString();
        }
      else
@@ -287,7 +287,7 @@ TargetReader::~TargetReader()
 
 TargetListReader::TargetListReader(const Path &projRoot)
  {
-  list.reserve(1000);
+  list.reserve(BigReserve);
 
   DirTree tree(projRoot);
 

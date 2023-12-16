@@ -21,7 +21,7 @@ namespace App {
 
 ProjectReader::ProjectReader(const String &fileName)
  {
-  base.reserve(1000);
+  base.reserve(BigReserve);
 
   FileReader inp(fileName);
 
@@ -135,7 +135,7 @@ ProjectListReader::ProjectListReader(const String &fileName)
 
   std::vector<String> base;
 
-  base.reserve(100);
+  base.reserve(BaseReserve);
 
   Token t3=inp.nextValuable();
 
@@ -177,7 +177,7 @@ ProjectListReader::ProjectListReader(const String &fileName)
 
         t1=std::move(t3);
         base={};
-        base.reserve(100);
+        base.reserve(BaseReserve);
 
         t3=inp.nextValuable();
 
@@ -221,6 +221,46 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
 
        throw std::runtime_error("cannot install project");
       }
+
+  std::set<String> deepSet(baseList.begin(),baseList.end());
+  std::vector<String> deep(baseList.begin(),baseList.end());
+
+  deep.reserve(BigReserve);
+
+  for(size_t ind=0; ind<deep.size() ;ind++)
+    {
+     String base=deep[ind];
+
+     if( base==projName )
+       {
+        std::cout << "Project makes a circle" << std::endl ;
+
+        throw std::runtime_error("cyclic project dependencies found");
+       }
+
+     auto ptr=list.find(base);
+
+     if( ptr!=list.end() )
+       {
+        for(const String &obj : ptr->second.base )
+          {
+           if( deepSet.insert(obj).second )
+             {
+              deep.push_back(obj);
+             }
+           else
+             {
+              std::cout << "Project " << obj << " makes a circle" << std::endl ;
+
+              throw std::runtime_error("cyclic project dependencies found");
+             }
+          }
+       }
+     else
+       {
+        std::cout << "There is no deep base project " << base << std::endl ;
+       }
+    }
 
   append(String(projName),baseList);
  }

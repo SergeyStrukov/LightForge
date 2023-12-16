@@ -147,7 +147,7 @@ void FileList::extend(Path path,Prefix prefix)
 
 FileList::FileList()
  {
-  list.reserve(1000);
+  list.reserve(BigReserve);
  }
 
 FileList::~FileList()

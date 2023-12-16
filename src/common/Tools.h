@@ -34,6 +34,11 @@ concept HasPrint = requires(T obj,std::ostream &out)
   obj.print(out);
  } ;
 
+/* consts */
+
+inline constexpr size_t BaseReserve = 100 ;
+inline constexpr size_t BigReserve = 1000 ;
+
 /* functions */
 
 inline bool PathExists(const Path &path) { return std::filesystem::exists(path); }

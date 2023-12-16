@@ -180,7 +180,7 @@ class FileReader::Builder
 
   public:
 
-   Builder() { buf.reserve(1000); }
+   Builder() { buf.reserve(BigReserve); }
 
    explicit Builder(char ch) : Builder() { add(ch); }
 

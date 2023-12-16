@@ -22,7 +22,7 @@ namespace App {
 
 BaseList::BaseList(const String &fileName)
  {
-  list.reserve(100);
+  list.reserve(BaseReserve);
 
   std::ifstream inp(fileName);
 
@@ -91,7 +91,7 @@ void FullBaseList::add(String &&str)
 
 FullBaseList::FullBaseList()
  {
-  list.reserve(1000);
+  list.reserve(BigReserve);
 
   add(GetSelf());
 
