@@ -205,6 +205,20 @@ ProjectListReader::~ProjectListReader()
  {
  }
 
+namespace {
+
+struct DeepTrace
+ {
+  String name;
+  size_t parent;
+
+  static constexpr size_t Root = size_t(-1) ;
+
+  DeepTrace(const String &name_,size_t parent_=Root) : name(name_),parent(parent_) {}
+ };
+
+} // local namespace
+
 void ProjectListReader::addProject(const String &projName,const std::vector<String> &baseList)
  {
   if( findProjName(projName) )
@@ -223,17 +237,29 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
       }
 
   std::set<String> deepSet(baseList.begin(),baseList.end());
-  std::vector<String> deep(baseList.begin(),baseList.end());
+
+  std::vector<DeepTrace> deep(baseList.begin(),baseList.end());
 
   deep.reserve(BigReserve);
 
   for(size_t ind=0; ind<deep.size() ;ind++)
     {
-     String base=deep[ind];
+     String base=deep[ind].name;
 
      if( base==projName )
        {
         std::cout << "Project makes a circle" << std::endl ;
+
+        for(size_t i=ind; i!=DeepTrace::Root ;)
+          {
+           const DeepTrace &obj=deep[i];
+
+           std::cout << obj.name << " <- " << std::endl ;
+
+           i=obj.parent;
+          }
+
+        std::cout << base << " <- LOOP" << std::endl ;
 
         throw std::runtime_error("cyclic project dependencies found");
        }
@@ -242,17 +268,11 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
 
      if( ptr!=list.end() )
        {
-        for(const String &obj : ptr->second.base )
+        for(const String &name : ptr->second.base )
           {
-           if( deepSet.insert(obj).second )
+           if( deepSet.insert(name).second )
              {
-              deep.push_back(obj);
-             }
-           else
-             {
-              std::cout << "Project " << obj << " makes a circle" << std::endl ;
-
-              throw std::runtime_error("cyclic project dependencies found");
+              deep.emplace_back(name,ind);
              }
           }
        }
