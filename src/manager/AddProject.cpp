@@ -189,6 +189,25 @@ static void CreateTargetBaselist(const Path &buildDir,const Path &dir,const Stri
     }
  }
 
+static void CreateTargetKind(const Path &dir,TargetKind kind)
+ {
+  std::ofstream out(dir/"TargetKind.txt");
+
+  switch( kind )
+    {
+     case TargetLib : out << "lib" ; break;
+     case TargetExe : out << "exe" ; break;
+     case TargetPregen : out << "pregen" ; break;
+    }
+
+  out.close();
+
+  if( !out )
+    {
+     throw std::runtime_error("'TargetKind.txt' creation error");
+    }
+ }
+
 static void CreateTargetCCpublicOpt(const Path &dir,const String &projPath,const TargetInfo &target)
  {
   std::ofstream out(dir/"CCpublic-opt.txt");
@@ -256,6 +275,7 @@ static void AddTarget(const Path &buildDir,const Path &folder,const String &proj
 
   CreateTargetMakefile(dir,target);
   CreateTargetBaselist(buildDir,dir,projName,target,nameSet);
+  CreateTargetKind(dir,target.kind);
   CreateTargetCCpublicOpt(dir,projPath,target);
   CreateTargetCCprivateOpt(dir,projPath,target);
   CreateTargetLDpublicOpt(dir,projName,target);

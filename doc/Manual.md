@@ -70,6 +70,8 @@ Target has a *name*, it must be a C-name, and must be unique inside the project.
 Target has a *base target list*. This list may contain current project targets as well as another project targets.
 In the last case the target name is given in the form *ProjectName.TargetName*.
 Targets inside the same project MAY have cyclic dependencies.
+Don't use strange extensions and names for your output files.
+The good practise is a *.a* extensin for libraries and *.exe* extension for executables.
 
 #### Library targets
 
@@ -113,6 +115,9 @@ SRC = dir1 dir2 ...
 ```
 It starts with the target type **exe**.
 OUT defines the executable file name to build.
+
+These executable should not change any files in the current folder! Otherwise, running them may break **LightForge**.
+But they may generate output in the **out** folder.
 
 #### Pregen targets
 
