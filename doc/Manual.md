@@ -140,6 +140,14 @@ OUT defines the folder where pregen should place the output files.
 It is passed to *pregen.exe* (modified to count base directory change).
 You may choose to use *INC_PRIVATE* list for such target to avoid anwanted include folder propagation.
 
+#### Build order
+
+When you run the deep build of the target, all base targets (directly and indirectly) are collected and then ordered to execute the build.
+The following rules are applied:
+1. Executable target is built after all library base targets.
+2. Pregen target is built after all library base targets.
+3. Any target is built after all pregen base targets.
+
 ## LightForge side
 
 All build activities happen inside the **LightForge** folder.
