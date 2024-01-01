@@ -20,15 +20,6 @@
 
 namespace App {
 
-/* consts */
-
-enum TargetKind
- {
-  TargetLib,
-  TargetExe,
-  TargetPregen
- };
-
 /* classes */
 
 struct BaseSpec;

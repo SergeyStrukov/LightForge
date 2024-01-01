@@ -13,7 +13,7 @@
 
 #include <exception>
 
-#include "FullBaseList.h"
+#include "DeepList.h"
 
 namespace App {
 
@@ -24,7 +24,9 @@ int Main()
   std::cout << "LightForge MakeDeep 1.00" << std::endl ;
   std::cout << "Copyright (c) 2023 Sergey Strukov. All rights reserved." << std::endl << std::endl ;
 
-  FullBaseList bases;
+  DeepList bases;
+
+  bases.order();
 
   bases.buildMakeDeep();
 

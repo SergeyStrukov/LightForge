@@ -39,7 +39,26 @@ concept HasPrint = requires(T obj,std::ostream &out)
 inline constexpr size_t BaseReserve = 100 ;
 inline constexpr size_t BigReserve = 1000 ;
 
+enum TargetKind
+ {
+  TargetLib,
+  TargetExe,
+  TargetPregen
+ };
+
 /* functions */
+
+inline constexpr const char * GetTag(TargetKind kind)
+ {
+  switch( kind )
+    {
+     case TargetLib : return "lib" ;
+     case TargetExe : return "exe" ;
+     case TargetPregen : return "pregen" ;
+
+     default: return "???";
+    }
+ }
 
 inline bool PathExists(const Path &path) { return std::filesystem::exists(path); }
 

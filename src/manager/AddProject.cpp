@@ -193,12 +193,7 @@ static void CreateTargetKind(const Path &dir,TargetKind kind)
  {
   std::ofstream out(dir/"TargetKind.txt");
 
-  switch( kind )
-    {
-     case TargetLib : out << "lib" ; break;
-     case TargetExe : out << "exe" ; break;
-     case TargetPregen : out << "pregen" ; break;
-    }
+  out << GetTag(kind) ;
 
   out.close();
 

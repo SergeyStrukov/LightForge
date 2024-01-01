@@ -15,9 +15,9 @@ CC = g++
 
 CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
 
-SRC = main.cpp ../common/FullBaseList.cpp
+SRC = main.cpp ../common/FullBaseList.cpp DeepList.cpp
 
-INC = ../common/Tools.h ../common/FullBaseList.h
+INC = ../common/Tools.h ../common/FullBaseList.h DeepList.h
 
 TARGET = ../../build/MakeDeep.exe
 

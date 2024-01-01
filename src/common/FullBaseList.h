@@ -60,13 +60,13 @@ class FullBaseList
 
    FullBaseList & operator = (const FullBaseList &) = delete ;
 
-   static String GetSelf();
-
    static void Append(std::ostream &out,const String &fileName);
 
    void add(String &&str);
 
   public:
+
+   static String GetSelf();
 
    FullBaseList();
 
@@ -74,7 +74,6 @@ class FullBaseList
 
    void buildCCopt();
    void buildLDopt();
-   void buildMakeDeep();
  };
 
 } // namespace App
