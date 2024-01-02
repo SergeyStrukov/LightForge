@@ -88,9 +88,9 @@ void ProjectListReader::warnBaseMissing(const String &projName)
     }
  }
 
-void ProjectListReader::append(String &&projName,const std::vector<String> &base)
+void ProjectListReader::append(String &&projName,std::vector<String> &&base)
  {
-  bool ok=list.insert(std::make_pair(std::move(projName),base)).second;
+  bool ok=list.insert(std::make_pair(std::move(projName),std::move(base))).second;
 
   if( !ok )
     {
@@ -282,7 +282,7 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
        }
     }
 
-  append(String(projName),baseList);
+  append(String(projName),std::vector<String>(baseList));
  }
 
 void ProjectListReader::delProject(const String &projName)
@@ -294,11 +294,11 @@ void ProjectListReader::delProject(const String &projName)
      list.erase(ptr);
 
      warnBaseMissing(projName);
-
-     return;
     }
-
-  std::cout << "There is no project " << projName << std::endl ;
+  else
+    {
+     std::cout << "There is no project " << projName << std::endl ;
+    }
  }
 
 void ProjectListReader::Rec::print(std::ostream &out) const

@@ -14,6 +14,8 @@
 #ifndef DeepList_h
 #define DeepList_h
 
+#include <map>
+
 #include "FullBaseList.h"
 
 namespace App {
@@ -30,13 +32,14 @@ class DeepList
     {
      String path;
      std::vector<String> bases;
+     std::vector<size_t> indexes;
      TargetKind kind;
 
      Rec(const String &path_,std::vector<String> &&bases_,TargetKind kind_) : path(path_),bases(std::move(bases_)),kind(kind_) {}
     };
 
    std::vector<Rec> list;
-   std::set<String> findSet;
+   std::map<String,size_t> indexMap;
 
   private:
 
@@ -46,7 +49,7 @@ class DeepList
 
    static TargetKind GetKind(String fileName);
 
-   void add(String path);
+   size_t add(String path);
 
   public:
 

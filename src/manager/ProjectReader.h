@@ -75,7 +75,7 @@ class ProjectListReader
 
    void warnBaseMissing(const String &projName);
 
-   void append(String &&projName,const std::vector<String> &base);
+   void append(String &&projName,std::vector<String> &&base);
 
    bool findProjName(const String &projName) const;
 

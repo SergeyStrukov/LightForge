@@ -46,15 +46,25 @@ TargetKind DeepList::GetKind(String fileName)
   throw std::runtime_error("bad type tag");
  }
 
-void DeepList::add(String path)
+size_t DeepList::add(String path)
  {
-  if( findSet.insert(path).second )
+  auto ptr=indexMap.find(path);
+
+  if( ptr!=indexMap.end() )
+    {
+     return (*ptr).second;
+    }
+  else
     {
      Path dir(path);
 
      BaseList ext(dir/"BaseList.txt");
 
+     size_t ret=list.size();
+
      list.emplace_back(path,std::move(ext.getList()),GetKind(dir/"TargetKind.txt"));
+
+     return ret;
     }
  }
 
@@ -66,10 +76,16 @@ DeepList::DeepList()
 
   for(size_t ind=0; ind<list.size() ;ind++)
     {
-     for(const String &str : list[ind].bases )
+     size_t count=list[ind].bases.size();
+
+     std::vector<size_t> indexes(count);
+
+     for(size_t i=0; i<count ;i++)
        {
-        add(str);
+        indexes[i]=add(list[ind].bases[i]);
        }
+
+     list[ind].indexes=std::move(indexes);
     }
  }
 
