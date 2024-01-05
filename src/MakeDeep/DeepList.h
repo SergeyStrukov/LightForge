@@ -34,6 +34,7 @@ class DeepList
      std::vector<String> bases;
      std::vector<size_t> indexes;
      TargetKind kind;
+     bool flag = true ;
 
      Rec(const String &path_,std::vector<String> &&bases_,TargetKind kind_) : path(path_),bases(std::move(bases_)),kind(kind_) {}
     };

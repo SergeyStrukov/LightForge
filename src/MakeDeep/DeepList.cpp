@@ -64,6 +64,8 @@ size_t DeepList::add(String path)
 
      list.emplace_back(path,std::move(ext.getList()),GetKind(dir/"TargetKind.txt"));
 
+     indexMap.emplace(std::move(path),ret);
+
      return ret;
     }
  }

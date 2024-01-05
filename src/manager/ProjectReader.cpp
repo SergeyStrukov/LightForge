@@ -90,7 +90,7 @@ void ProjectListReader::warnBaseMissing(const String &projName)
 
 void ProjectListReader::append(String &&projName,std::vector<String> &&base)
  {
-  bool ok=list.insert(std::make_pair(std::move(projName),std::move(base))).second;
+  bool ok=list.emplace(std::move(projName),std::move(base)).second;
 
   if( !ok )
     {
