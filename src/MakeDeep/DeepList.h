@@ -22,7 +22,32 @@ namespace App {
 
 /* classes */
 
+class IndexSet;
 class DeepList;
+
+/* class IndexSet */
+
+class IndexSet
+ {
+   std::set<size_t> indexSet;
+   std::vector<size_t> list;
+
+  public:
+
+   IndexSet();
+
+   void add(size_t elem);
+
+   bool test(size_t ind) const { return ind<list.size(); }
+
+   size_t get(size_t ind) const { return list[ind]; }
+
+   template <class Func>
+   void applyOther(Func func) const
+    {
+     std::for_each(list.begin()+1,list.end(),func);
+    }
+ };
 
 /* class DeepList */
 
@@ -35,12 +60,38 @@ class DeepList
      std::vector<size_t> indexes;
      TargetKind kind;
      bool flag = true ;
+     bool lock = false ;
 
      Rec(const String &path_,std::vector<String> &&bases_,TargetKind kind_) : path(path_),bases(std::move(bases_)),kind(kind_) {}
     };
 
    std::vector<Rec> list;
    std::map<String,size_t> indexMap;
+
+   struct FillList
+    {
+     Rec *rec;
+     IndexSet baseList;
+     size_t cur;
+     size_t ind;
+
+     FillList(Rec &obj,size_t pind);
+
+     struct FillResult
+      {
+       bool done = true ;
+       size_t pind = 0 ;
+      };
+
+     FillResult fill(Rec *list);
+
+     size_t copy(Rec *list,Rec **olist) const;
+    };
+
+   std::vector<FillList> stack;
+
+   std::vector<Rec *> olist;
+   size_t osize = 0 ;
 
   private:
 
@@ -51,6 +102,12 @@ class DeepList
    static TargetKind GetKind(String fileName);
 
    size_t add(String path);
+
+   void push(size_t pind);
+   void pop();
+   FillList & top();
+
+   void orderPregen(size_t pind);
 
   public:
 
