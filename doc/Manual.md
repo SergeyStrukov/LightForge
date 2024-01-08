@@ -225,4 +225,12 @@ RUN_OPT = arg1 arg2 arg3
 Building the pregen target creates the executable file *pregen.exe* in the target folder, then runs it with the argument *pregen-folder*.
 After all, the file *pregen-file.txt* with timestamp is created in the target folder.
 
+## Copyright
 
+```
+Project: LightForge 1.00
+
+License: Boost Software License - Version 1.0 - August 17th, 2003 see http://www.boost.org/LICENSE_1_0.txt or the local copy
+
+Copyright (c) 2023 Sergey Strukov. All rights reserved.
+```
