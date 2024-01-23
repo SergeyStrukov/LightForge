@@ -15,23 +15,23 @@ Then run **make** inside the folder to build **LightForge** software.
 ```
 /home/user/LightForge>make
 ```
-You may choose another location for the installation, but define then the following environment variable *LIGHT_FORGE*.
+You may choose another location for the installation, but define then the following environment variable **LIGHT_FORGE**.
 Set it to the path to the installation folder.
 
 ## Project side
 
 *Project* is a set of source files and project description files. It is located inside some folder.
-This folder must contain the file *PROJECT*.
+This folder must contain the file **PROJECT**.
 This file contains the general project description. For example:
 ```
 TestForge: TestForgeLib
 ```
-Description consists of the *ProjectName*, then colon follows, then the list of base projects.
-Each project inside **LightForge** is identified by its *ProjectName*. It must be a C-name.
+Description consists of the **ProjectName**, then colon follows, then the list of base projects.
+Each project inside **LightForge** is identified by its **ProjectName**. It must be a C-name.
 Each project name must be unique.
 Each project has a list of base projects: each base project contributes to the target project.
 Cyclic dependencies among projects are not allowed.
-It is a good practise provide the file *Makefile* along with the file *PROJECT* with the following content (or similar):
+It is a good practise provide the file **Makefile** along with the file **PROJECT** with the following content (or similar):
 ```
 # Makefile
 
@@ -51,10 +51,32 @@ Use it to install the project to or delete it from the **LightForge**:
 ...>make delete
 ```
 
+### LightForge manager
+
+To install to or remove a project from the **LightForge** use the program **manager.exe** in the root of the **LightForge**.
+
+To add a project:
+```
+manager.exe add <path> ( <build> )*
+```
+
+To delete a project:
+```
+manager.exe del <path> ( <build> )*
+```
+
+`<path>` is a path to the project root (where the file **PROJECT** is located).
+Build list may be given.
+
+To delete a project by name:
+```
+manager.exe delproj <name> ( <build> )*
+```
+
 ### Targets
 
 When you install a project, the **LightForge** manager scans recursively the project folder subfolders in search for targets.
-Target is defined by the file *TARGET* in some subfolder.
+Target is defined by the file **TARGET** in some subfolder.
 Here is an example of the content:
 ```
 exe test: TestForgeLib.lib1 TestForgeLib.lib2 testPregen
@@ -95,7 +117,7 @@ SRC defines the list of source folders. All *.cpp files in these folders and its
 INC and INC_PRIVATE are optional folder lists. They are used to lookup for header files during compilation.
 The difference between them is: INC folders are propagated to the dependent targets.
 Built library is propagated to dependent exe and pregen targets.
-All relative pathes here are based on the *TARGET* folder.
+All relative pathes here are based on the **TARGET** folder.
 
 #### Executable targets
 
@@ -156,14 +178,14 @@ All build activities happen inside the **LightForge** folder.
 
 All project related files are located inside the **LightForge/build** subfolder. This subfolder contains *builds*.
 Each build is a set of tools to build libraries and executables. **LightForge** installation has only one build: **std**.
-But you may add additional ones. All you need is to add a folder with the chosen name and place there the file *Makefile-tools*.
+But you may add additional ones. All you need is to add a folder with the chosen name and place there the file **Makefile-tools**.
 Look into **LightForge/build/std/Makefile-tools** to figure out what this file is up to.
 When you install a project into **LightForge**, you may select builds to install into.
 
 ### Build/Project
 
 If some project is installed in some build, the project folder is created **LightForge/build/BuildName/ProjectName**.
-It contains *Makefile*. This makefile contains a goal per each project target.
+It contains **Makefile**. This makefile contains a goal per each project target.
 The command **make TargetName** runs the deep build of the target:
 ```
 /home/user/LightForge/build/BuildName/ProjectName>make TargetName
@@ -219,7 +241,7 @@ There is a special goal in the target makefile:
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make run
 ```
 It runs the built executable.
-You may specify arguments for this run inside the **source** target folder (alone with the file TARGET) in the file *Makefile-runopt*.
+You may specify arguments for this run inside the **source** target folder (alone with the file **TARGET**) in the file *Makefile-runopt*.
 ```
 RUN_OPT = arg1 arg2 arg3
 ```
