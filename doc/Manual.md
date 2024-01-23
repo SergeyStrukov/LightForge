@@ -66,7 +66,7 @@ manager.exe del <path> ( <build> )*
 ```
 
 `<path>` is a path to the project root (where the file **PROJECT** is located).
-Build list may be given.
+A build list may be given. If none `add` adds to the build **std**, `del` removes from all builds.
 
 To delete a project by name:
 ```
