@@ -14,9 +14,9 @@
 .PHONY: install
 
 install:
-	make -C src/manager
-	make -C src/MakeList
-	make -C src/MakeCCopt
-	make -C src/MakeDeep
-	make -C src/MakeLDopt
-	make -C src/MakeDeepclean
+	$(MAKE) -C src/manager
+	$(MAKE) -C src/MakeList
+	$(MAKE) -C src/MakeCCopt
+	$(MAKE) -C src/MakeDeep
+	$(MAKE) -C src/MakeLDopt
+	$(MAKE) -C src/MakeDeepclean

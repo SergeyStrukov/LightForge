@@ -24,6 +24,8 @@ void AddProject(Path curpath,Path forge,Path proj,const char *const*build,int bu
 
 void DelProject(Path curpath,Path forge,Path proj,const char *const*build,int buildCount);
 
+void DelProjectByName(Path forge,Path proj,const char *const*build,int buildCount);
+
 } // namespace App
 
 #endif

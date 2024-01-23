@@ -25,7 +25,14 @@ class Opt
  {
    Path curpath=CurPath();
 
-   bool add;
+   enum CommandType
+    {
+     CommandAdd,
+     CommandDel,
+     CommandDelProj
+    };
+
+   CommandType cmd;
    const char *self;
    const char *path;
 
@@ -43,16 +50,29 @@ class Opt
      return std::strcmp(str1,str2)==0;
     }
 
-   static bool Command(const char *arg)
+   static CommandType Command(const char *arg)
     {
-     if( TestStr(arg,"add") ) return true;
+     if( TestStr(arg,"add") ) return CommandAdd;
 
-     if( !TestStr(arg,"del") )
+     if( TestStr(arg,"del") ) return CommandDel;
+
+     if( TestStr(arg,"delproj") ) return CommandDelProj;
+
+     throw std::runtime_error("unknown command");
+
+     return CommandDelProj;
+    }
+
+   static const char * CommandName(CommandType cmd)
+    {
+     switch( cmd )
        {
-        throw std::runtime_error("unknown command");
-       }
+        case CommandAdd : return "add";
+        case CommandDel : return "del";
+        case CommandDelProj : return "delproj";
 
-     return false;
+        default: return "???";
+       }
     }
 
   public:
@@ -72,7 +92,7 @@ Opt::Opt(int argc,const char *const*argv)
     }
 
   self=argv[0];
-  add=Command(argv[1]);
+  cmd=Command(argv[1]);
   path=argv[2];
   build=argv+3;
   buildCount=argc-3;
@@ -82,7 +102,7 @@ void Opt::print(std::ostream &out) const
  {
   out << "self: " << self << std::endl ;
   out << "wdir: " << curpath.c_str() << std::endl ;
-  out << (add? "add":"del") << std::endl ;
+  out << CommandName(cmd) << std::endl ;
   out << "path: " << path << std::endl ;
 
   for(int i=0; i<buildCount ;i++)
@@ -95,13 +115,25 @@ int Opt::commit()
  {
   Path forge=Path(self).parent_path();
 
-  if( add )
+  switch( cmd )
     {
-     AddProject(curpath,forge,path,build,buildCount);
-    }
-  else
-    {
-     DelProject(curpath,forge,path,build,buildCount);
+     case CommandAdd :
+      {
+       AddProject(curpath,forge,path,build,buildCount);
+      }
+     break;
+
+     case CommandDel :
+      {
+       DelProject(curpath,forge,path,build,buildCount);
+      }
+     break;
+
+     case CommandDelProj :
+      {
+       DelProjectByName(forge,path,build,buildCount);
+      }
+     break;
     }
 
   return 0;
