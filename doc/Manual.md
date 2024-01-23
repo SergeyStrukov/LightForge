@@ -160,7 +160,7 @@ SRC = dir1 dir2 ...
 It starts with the target type **pregen**.
 OUT defines the folder where pregen should place the output files.
 It is passed to *pregen.exe* (modified to count base directory change).
-You may choose to use *INC_PRIVATE* list for such target to avoid anwanted include folder propagation.
+You may choose to use INC_PRIVATE list for such target to avoid unwanted include folder propagation.
 
 #### Build order
 
@@ -241,7 +241,7 @@ There is a special goal in the target makefile:
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make run
 ```
 It runs the built executable.
-You may specify arguments for this run inside the **source** target folder (alone with the file **TARGET**) in the file *Makefile-runopt*.
+You may specify arguments for this run inside the **source** target folder (alone with the file **TARGET**) in the file **Makefile-runopt**.
 ```
 RUN_OPT = arg1 arg2 arg3
 ```
