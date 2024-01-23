@@ -21,7 +21,7 @@ DEP_FILE = $(DEP_PATH)/Makefile-dep
 
 #-------------------------------------------------------------------------------
 
-.PHONY : deep all list clean dep asm
+.PHONY : all asm deep clean dep list deepclean
 
 all: $(TARGET)
 
@@ -31,6 +31,15 @@ Makefile-deep : ../../PROJECTS
 	@$(ECHO) "making Makefile-deep..." ; ../../../MakeDeep.exe
 
 include Makefile-deep
+
+endif
+
+ifeq ($(MAKECMDGOALS),deepclean)
+
+Makefile-deepclean : ../../PROJECTS
+	@$(ECHO) "making Makefile-deepclean..." ; ../../../MakeDeepclean.exe
+
+include Makefile-deepclean
 
 endif
 

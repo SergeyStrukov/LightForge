@@ -190,6 +190,10 @@ Clean:
 ```
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make clean
 ```
+Deep clean:
+```
+/home/user/LightForge/build/BuildName/ProjectName/TargetName>make deepclean
+```
 Prepare source file list:
 ```
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make list

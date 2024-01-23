@@ -11,12 +11,19 @@
 #
 #----------------------------------------------------------------------------------------
 
-.PHONY: install
+CC = g++
 
-install:
-	make -C src/manager
-	make -C src/MakeList
-	make -C src/MakeCCopt
-	make -C src/MakeDeep
-	make -C src/MakeLDopt
-	make -C src/MakeDeepclean
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
+
+SRC = main.cpp ../common/FullBaseList.cpp
+
+INC = ../common/Tools.h ../common/FullBaseList.h
+
+TARGET = ../../build/MakeDeepclean.exe
+
+all: $(TARGET)
+
+$(TARGET) : $(SRC) $(INC)
+	$(CC) $(CCOPT) $(SRC) -o $(TARGET)
+
+
