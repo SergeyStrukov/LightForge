@@ -19,6 +19,8 @@ LDOPT_EXTRA ?=
 
 ECHO = /usr/bin/echo
 
+FIND = /usr/bin/find
+
 CAT_ = /usr/bin/cat
 
 CC_ = g++

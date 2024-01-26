@@ -47,6 +47,8 @@ endif
 
 SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
 
+SRCDIR_LIST_DEP = $(shell $(FIND) $(SRCDIR_LIST_EXP) -type d)
+
 #-------------------------------------------------------------------------------
 
 CC-opt.txt : ../../PROJECTS
@@ -60,7 +62,7 @@ LD-opt.txt : ../../PROJECTS
 list:
 	@$(ECHO) "making list..." ; ../../../MakeList.exe $(SRCDIR_LIST_EXP)
 
-Makefile-list : $(SRCDIR_LIST_EXP)
+Makefile-list : $(SRCDIR_LIST_DEP)
 	@$(ECHO) "updating list..." ; ../../../MakeList.exe $(SRCDIR_LIST_EXP)
 
 include Makefile-list
