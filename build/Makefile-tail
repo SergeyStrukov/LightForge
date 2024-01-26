@@ -33,7 +33,7 @@ endif
 include ../../../$(TARGET_BUILD)
 
 clean:
-	$(RM) $(TARGET) pregen.exe $(OBJ_PATH)/* $(DEP_PATH)/* $(ASM_PATH)/*
+	$(RM) $(TARGET) pregen.exe $(DEP_FILE) $(OBJ_PATH)/* $(DEP_PATH)/* $(ASM_PATH)/*
 
 dep:
 	$(RM) $(DEP_FILE) $(DEP_LIST)
