@@ -21,6 +21,12 @@
 
 namespace App {
 
+/* functions */
+
+bool CompareFiles(const char *fileName1,const char *fileName2); // true means equal
+
+void UpdateFile(const char *oldFileName,const char *newFileName);
+
 /* classes */
 
 class BaseList;

@@ -13,10 +13,51 @@
 
 #include <stdexcept>
 #include <fstream>
+#include <cstdio>
 
 #include "FullBaseList.h"
 
 namespace App {
+
+/* functions */
+
+bool CompareFiles(const char *fileName1,const char *fileName2)
+ {
+  std::ifstream inp1(fileName1,std::ios::binary);
+  std::ifstream inp2(fileName2,std::ios::binary);
+
+  if( !inp1.is_open() || !inp2.is_open() ) return false;
+
+  inp1.exceptions(std::ifstream::badbit);
+  inp2.exceptions(std::ifstream::badbit);
+
+  for(;;)
+    {
+     int ch1=inp1.get();
+     int ch2=inp2.get();
+
+     if( ch1==ch2 )
+       {
+        if( ch1==std::char_traits<char>::eof() ) return true;
+       }
+     else
+       {
+        return false;
+       }
+    }
+ }
+
+void UpdateFile(const char *oldFileName,const char *newFileName)
+ {
+  if( CompareFiles(oldFileName,newFileName) )
+    {
+     std::filesystem::remove(newFileName);
+    }
+  else
+    {
+     std::filesystem::rename(newFileName,oldFileName);
+    }
+ }
 
 /* class BaseList */
 
@@ -112,7 +153,7 @@ FullBaseList::~FullBaseList()
 
 void FullBaseList::buildCCopt()
  {
-  std::ofstream out("CC-opt.txt");
+  std::ofstream out("CC-opt.txt.new");
 
   Append(out,"CCprivate-opt.txt");
 
@@ -127,11 +168,13 @@ void FullBaseList::buildCCopt()
     {
      throw std::runtime_error("'CC-opt.txt' creation error");
     }
+
+  UpdateFile("CC-opt.txt","CC-opt.txt.new");
  }
 
 void FullBaseList::buildLDopt()
  {
-  std::ofstream out("LD-opt.txt");
+  std::ofstream out("LD-opt.txt.new");
 
   out << "-Wl,--start-group\n" ;
 
@@ -148,6 +191,8 @@ void FullBaseList::buildLDopt()
     {
      throw std::runtime_error("'LD-opt.txt' creation error");
     }
+
+  UpdateFile("LD-opt.txt","LD-opt.txt.new");
  }
 
 void FullBaseList::buildDeepclean()
