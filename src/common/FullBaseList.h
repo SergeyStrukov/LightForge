@@ -68,6 +68,10 @@ class FullBaseList
 
    static void Append(std::ostream &out,const String &fileName);
 
+   static String Cat(const std::vector<String> &list);
+
+   static void AppendSlash(std::ostream &out,String text);
+
    void add(String &&str);
 
   public:

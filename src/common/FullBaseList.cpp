@@ -112,6 +112,42 @@ void FullBaseList::Append(std::ostream &out,const String &fileName)
   out << inp.rdbuf() ;
  }
 
+String FullBaseList::Cat(const std::vector<String> &list)
+ {
+  std::ostringstream out;
+
+  for(const String &str: list )
+    {
+     Append(out,Path(str)/"LDpublic-opt.txt");
+    }
+
+  return out.str();
+ }
+
+void FullBaseList::AppendSlash(std::ostream &out,String text)
+ {
+  auto append = [&out] (std::string_view line) { out << line << " \\\n" ; } ;
+
+  std::string_view view(text);
+
+  for(size_t pos=0,len=view.length(); pos<len ;)
+    {
+     size_t eolpos=view.find('\n',pos);
+
+     if( eolpos==view.npos )
+       {
+        append(view.substr(pos));
+        break;
+       }
+     else
+       {
+        append(view.substr(pos,eolpos-pos));
+
+        pos=eolpos+1;
+       }
+    }
+ }
+
 void FullBaseList::add(String &&str)
  {
   if( findSet.insert(str).second )
@@ -174,25 +210,43 @@ void FullBaseList::buildCCopt()
 
 void FullBaseList::buildLDopt()
  {
-  std::ofstream out("LD-opt.txt.new");
+  String text=Cat(list);
 
-  out << "-Wl,--start-group\n" ;
+  // LD-opt
+  {
+   std::ofstream out("LD-opt.txt.new");
 
-  for(const String &str: list )
-    {
-     Append(out,Path(str)/"LDpublic-opt.txt");
-    }
+   out << "-Wl,--start-group\n" ;
+   out << text ;
+   out << "-Wl,--end-group\n" ;
 
-  out << "-Wl,--end-group\n" ;
+   out.close();
 
-  out.close();
+   if( !out )
+     {
+      throw std::runtime_error("'LD-opt.txt' creation error");
+     }
 
-  if( !out )
-    {
-     throw std::runtime_error("'LD-opt.txt' creation error");
-    }
+   UpdateFile("LD-opt.txt","LD-opt.txt.new");
+  }
 
-  UpdateFile("LD-opt.txt","LD-opt.txt.new");
+  // Makefile-libs
+  {
+   std::ofstream out("Makefile-libs.new");
+
+   out << "LIBS = \\\n" ;
+
+   AppendSlash(out,text) ;
+
+   out.close();
+
+   if( !out )
+     {
+      throw std::runtime_error("'Makefile-libs' creation error");
+     }
+
+   UpdateFile("Makefile-libs","Makefile-libs.new");
+  }
  }
 
 void FullBaseList::buildDeepclean()

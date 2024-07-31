@@ -54,6 +54,8 @@ SRCDIR_LIST_DEP = $(shell $(FIND) $(SRCDIR_LIST_EXP) -type d)
 CC-opt.txt : ../../PROJECTS
 	@$(ECHO) "making CC-opt..." ; ../../../MakeCCopt.exe
 
+Makefile-libs : LD-opt.txt
+
 LD-opt.txt : ../../PROJECTS
 	@$(ECHO) "making LD-opt..." ; ../../../MakeLDopt.exe
 

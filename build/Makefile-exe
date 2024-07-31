@@ -15,7 +15,9 @@ RUN_OPT ?=
 
 #-------------------------------------------------------------------------------
 
-$(TARGET) : LD-opt.txt $(OBJ_LIST) 
+include Makefile-libs
+
+$(TARGET) : LD-opt.txt $(OBJ_LIST) $(LIBS)
 	$(LD) $(LDOPT) $(OBJ_LIST) @LD-opt.txt -o $@
 
 .PHONY : run
