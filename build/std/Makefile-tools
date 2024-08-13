@@ -58,6 +58,7 @@ NOWARN = -Wno-non-virtual-dtor \
          -Wno-missing-field-initializers \
          -Wno-delete-non-virtual-dtor \
          -Wno-misleading-indentation \
+         -Wno-inaccessible-base \
 
 
 CCINC = 
