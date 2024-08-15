@@ -156,11 +156,14 @@ SRC = dir1 dir2 ...
 
 [INC_PRIVATE = dir1 dir2 ...]
 
+[INP = file1 file2 ...]
+
 ```
 It starts with the target type **pregen**.
 OUT defines the folder where pregen should place the output files.
 It is passed to *pregen.exe* (modified to count base directory change).
 You may choose to use INC_PRIVATE list for such target to avoid unwanted include folder propagation.
+INP is the (optional) list of files. This list with modified path will be passed to *pregen.exe* as arguments after OUT.
 
 #### Build order
 

@@ -51,6 +51,7 @@ struct TargetInfo
   std::vector<String> src;
   std::vector<String> inc;
   std::vector<String> incPrivate;
+  std::vector<String> pregenInp;
   std::vector<BaseSpec> base;
 
   void checkBases(const std::vector<String> &baseList) const;
@@ -64,6 +65,7 @@ class TargetReader : TargetInfo
    bool srcFlag = false ;
    bool incFlag = false ;
    bool incPrivateFlag = false ;
+   bool pregenInpFlag = false ;
 
   private:
 

@@ -99,6 +99,25 @@ void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fil
      incPrivate=std::move(list);
      incPrivateFlag=true;
     }
+  else if( key=="INP" )
+    {
+     if( kind!=TargetPregen )
+       {
+        std::cout << "File " << fileName << pos << " : INP key only for pregen targets" << std::endl ;
+
+        throw std::runtime_error("file processing error");
+       }
+
+     if( pregenInpFlag )
+       {
+        std::cout << "File " << fileName << pos << " : INP key duplication" << std::endl ;
+
+        throw std::runtime_error("file processing error");
+       }
+
+     pregenInp=std::move(list);
+     pregenInpFlag=true;
+    }
   else
     {
      std::cout << "File " << fileName << pos << " : unknown key '" << key << "'" << std::endl ;

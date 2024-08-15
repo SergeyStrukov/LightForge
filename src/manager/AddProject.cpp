@@ -118,6 +118,13 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
       {
        out << "TARGET = pregen-time.txt\n\n" ;
 
+       out << "RUN_SRC = " ;
+
+       for(const String &arg : target.pregenInp )
+         out << "../$(PROJECT_PATH)/$(TARGET_PATH)/" << arg << " \\\n" ;
+
+       out << "\n\n" ;
+
        out << "RUN_OPT = ../$(PROJECT_PATH)/$(TARGET_PATH)/" << target.outName << "\n\n" ;
 
        out << "TARGET_BUILD = Makefile-pregen\n\n" ;
