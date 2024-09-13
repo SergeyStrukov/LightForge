@@ -226,7 +226,7 @@ void DeepList::order()
 
   for(size_t ind=0; ind<count ;ind++)
     {
-     if( list[ind].kind==TargetPregen  && list[ind].flag )
+     if( list[ind].kind==TargetPregen && list[ind].flag )
        {
         orderPregen(ind);
        }

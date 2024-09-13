@@ -79,7 +79,7 @@ class DeepList
 
      struct FillResult
       {
-       bool done = true ;
+       bool done = false ;
        size_t pind = 0 ;
       };
 
