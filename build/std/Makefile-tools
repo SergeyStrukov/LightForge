@@ -65,7 +65,7 @@ CCINC =
 
 CCCPU = -march=native
 
-CCOPT = -c -std=c++20 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall -Wextra $(NOWARN) $(CCINC) $(CCOPT_EXTRA)
+CCOPT = -c -std=c++23 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall -Wextra $(NOWARN) $(CCINC) $(CCOPT_EXTRA)
 
 LDOPT = -Wl,-s $(LDOPT_EXTRA)
 
