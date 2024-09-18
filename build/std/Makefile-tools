@@ -13,6 +13,8 @@
 
 CCOPT_EXTRA ?=
 
+ASOPT_EXTRA ?=
+
 LDOPT_EXTRA ?=
 
 # tools ------------------------------------------------------------------------
@@ -24,6 +26,8 @@ FIND = /usr/bin/find
 CAT_ = /usr/bin/cat
 
 CC_ = g++
+
+AS_ = as
 
 AR_ = ar
 
@@ -40,6 +44,8 @@ CAT = @$(ECHO) CAT ; $(CAT_)
 CC = @$(ECHO) CC $< ; $(CC_)
 
 LD = @$(ECHO) LD $@ ; $(CC_)
+
+AS = @$(ECHO) AS $< ; $(AS_)
 
 AR = @$(ECHO) AR $@ ; $(AR_)
 
@@ -66,6 +72,8 @@ CCINC =
 CCCPU = -march=native
 
 CCOPT = -c -std=c++20 -fwrapv -fconcepts-diagnostics-depth=3 -O3 $(CCCPU) -Wall -Wextra $(NOWARN) $(CCINC) $(CCOPT_EXTRA)
+
+ASOPT = $(ASOPT_EXTRA)
 
 LDOPT = -Wl,-s $(LDOPT_EXTRA)
 
