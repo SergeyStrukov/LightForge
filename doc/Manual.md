@@ -13,6 +13,8 @@ make --version
 Obtain a copy of the software. Place it under the default location **~/LightForge**.
 Then run **make** inside the folder to build **LightForge** software.
 ```
+/home/user/git clone https://github.com/SergeyStrukov/LightForge.git
+/home/user/cd LightForge
 /home/user/LightForge>make
 ```
 You may choose another location for the installation, but define then the following environment variable **LIGHT_FORGE**.
@@ -53,7 +55,7 @@ Use it to install the project to or delete it from the **LightForge**:
 
 ### LightForge manager
 
-To install to or remove a project from the **LightForge** use the program **manager.exe** in the root of the **LightForge**.
+To install to or remove a project from the **LightForge** use the program `manager.exe` in the root of the **LightForge**.
 
 To add a project:
 ```
@@ -93,7 +95,7 @@ Target has a *base target list*. This list may contain current project targets a
 In the last case the target name is given in the form *ProjectName.TargetName*.
 Targets inside the same project MAY have cyclic dependencies.
 Don't use strange extensions and names for your output files.
-The good practise is a *.a* extensin for libraries and *.exe* extension for executables.
+The good practise is a `.a` extensin for libraries and `.exe` extension for executables.
 
 #### Library targets
 
@@ -113,10 +115,10 @@ SRC = dir1 dir2 ...
 ```
 It starts with the target type **lib**, then TargetName follows, then colon follows, then the list of base targets.
 OUT defines the library file name to build.
-SRC defines the list of source folders. All *.cpp files in these folders and its subfolders comprise the source file set.
+SRC defines the list of source folders. All `*.cpp` files and `*.s` files in these folders and its subfolders comprise the source file set.
 INC and INC_PRIVATE are optional folder lists. They are used to lookup for header files during compilation.
 The difference between them is: INC folders are propagated to the dependent targets.
-Built library is propagated to dependent exe and pregen targets.
+Built library is propagated to dependent **exe** and **pregen** targets.
 All relative pathes here are based on the **TARGET** folder.
 
 #### Executable targets
@@ -161,9 +163,9 @@ SRC = dir1 dir2 ...
 ```
 It starts with the target type **pregen**.
 OUT defines the folder where pregen should place the output files.
-It is passed to *pregen.exe* (modified to count base directory change).
+It is passed to `pregen.exe` (modified to count base directory change).
 You may choose to use INC_PRIVATE list for such target to avoid unwanted include folder propagation.
-INP is the (optional) list of files. This list with modified path will be passed to *pregen.exe* as arguments after OUT.
+INP is the (optional) list of files. This list with modified path will be passed to `pregen.exe` as arguments after OUT.
 
 #### Build order
 
@@ -251,8 +253,8 @@ RUN_OPT = arg1 arg2 arg3
 
 #### Pregen targets
 
-Building the pregen target creates the executable file *pregen.exe* in the target folder, then runs it with the argument *pregen-folder*.
-After all, the file *pregen-file.txt* with timestamp is created in the target folder.
+Building the pregen target creates the executable file `pregen.exe` in the target folder, then runs it with the argument `pregen-folder` (and optionally input file list).
+After all, the file `pregen-file.txt` with timestamp is created in the target folder.
 
 ## Copyright
 

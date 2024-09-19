@@ -2,8 +2,8 @@
 
 Target sort.
 
-exe <- ... <- lib : exe < lib 
+exe <- ... <- lib : exe < lib
 
 pregen <- ... <- lib : pregen < lib
 
-any <- ... <- pregen : any < lib 
+any <- ... <- pregen : any < pregen
