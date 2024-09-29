@@ -4,5 +4,6 @@
 *.exe
 **/std/**
 **/stdwin/**
+**/ccore/**
 PROJECTS
 **/.*/**

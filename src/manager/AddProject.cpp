@@ -101,6 +101,8 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "TARGET = " << target.outName << "\n\n" ;
 
        out << "TARGET_BUILD = Makefile-ar\n\n" ;
+
+       out << "-include ../$(PROJECT_PATH)/$(TARGET_PATH)/Makefile-opt\n\n" ;
       }
      break;
 
@@ -109,6 +111,8 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "TARGET = " << target.outName << "\n\n" ;
 
        out << "TARGET_BUILD = Makefile-exe\n\n" ;
+
+       out << "-include ../$(PROJECT_PATH)/$(TARGET_PATH)/Makefile-opt\n\n" ;
 
        out << "-include ../$(PROJECT_PATH)/$(TARGET_PATH)/Makefile-runopt\n\n" ;
       }
@@ -128,6 +132,8 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "RUN_OPT = ../$(PROJECT_PATH)/$(TARGET_PATH)/" << target.outName << "\n\n" ;
 
        out << "TARGET_BUILD = Makefile-pregen\n\n" ;
+
+       out << "-include ../$(PROJECT_PATH)/$(TARGET_PATH)/Makefile-opt\n\n" ;
       }
      break;
     }
