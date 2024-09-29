@@ -13,8 +13,8 @@ make --version
 Obtain a copy of the software. Place it under the default location **~/LightForge**.
 Then run **make** inside the folder to build **LightForge** software.
 ```
-/home/user/git clone https://github.com/SergeyStrukov/LightForge.git
-/home/user/cd LightForge
+/home/user>git clone https://github.com/SergeyStrukov/LightForge.git
+/home/user>cd LightForge
 /home/user/LightForge>make
 ```
 You may choose another location for the installation, but define then the following environment variable **LIGHT_FORGE**.
@@ -83,11 +83,11 @@ Here is an example of the content:
 ```
 exe test: TestForgeLib.lib1 TestForgeLib.lib2 testPregen
 
-OUT = test.exe
+INC = .
 
 SRC = .
 
-INC = .
+OUT = test.exe
 ```
 Target has a *type*. There are 3 target types: *library*, *executable*, *pregen*.
 Target has a *name*, it must be a C-name, and must be unique inside the project.
@@ -166,6 +166,22 @@ OUT defines the folder where pregen should place the output files.
 It is passed to `pregen.exe` (modified to count base directory change).
 You may choose to use INC_PRIVATE list for such target to avoid unwanted include folder propagation.
 INP is the (optional) list of files. This list with modified path will be passed to `pregen.exe` as arguments after OUT.
+These files becomes prerequisites of pregen: changing them cause pregen to be rerun.
+
+#### Extra options
+
+You may place the file `Makefile-opt` along with the **TARGET** to define extra options for the target.
+For example, for the build **std** you may define the following extra options for various tools:
+
+```
+CCOPT_EXTRA = <CC-options>
+
+ASOPT_EXTRA = <AS-options>
+
+LDOPT_EXTRA = <LD-options>
+```
+
+You may use the following path `../$(PROJECT_PATH)/$(TARGET_PATH)` to refer the target folder in the makefile.
 
 #### Build order
 
@@ -259,7 +275,7 @@ After all, the file `pregen-file.txt` with timestamp is created in the target fo
 ## Copyright
 
 ```
-Project: LightForge 1.00
+Project: LightForge 1.xx
 
 License: Boost Software License - Version 1.0 - August 17th, 2003 see http://www.boost.org/LICENSE_1_0.txt or the local copy
 
