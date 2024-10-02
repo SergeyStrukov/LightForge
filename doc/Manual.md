@@ -181,7 +181,7 @@ ASOPT_EXTRA = <AS-options>
 LDOPT_EXTRA = <LD-options>
 ```
 
-You may use the following path `../$(PROJECT_PATH)/$(TARGET_PATH)` to refer the target folder in the makefile.
+You may use the following path `$(TARGET_ROOT)` to refer the target folder in the makefile.
 
 #### Build order
 

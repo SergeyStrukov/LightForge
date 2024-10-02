@@ -45,7 +45,7 @@ endif
 
 #-------------------------------------------------------------------------------
 
-SRCDIR_LIST_EXP = $(addprefix ../$(PROJECT_PATH)/$(TARGET_PATH)/,$(SRCDIR_LIST))
+SRCDIR_LIST_EXP = $(addprefix $(TARGET_ROOT)/,$(SRCDIR_LIST))
 
 SRCDIR_LIST_DEP = $(shell $(FIND) $(SRCDIR_LIST_EXP) -type d)
 
