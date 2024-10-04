@@ -44,3 +44,11 @@ INC = dir1 ... dirN
 INC_PRIVATE = dir1 ... dirN
 
 ```
+
+```
+
+make name: name1 ... nameN
+
+// target names: target OR proj.target
+
+```
