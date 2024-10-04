@@ -35,12 +35,12 @@ void IndexSet::add(size_t elem)
 
 /* class DeepList */
 
-DeepList::FillList::FillList(Rec &obj,size_t pind)
+DeepList::FillList::FillList(Rec &obj,size_t recind)
  {
   obj.lock=true;
 
   rec=&obj;
-  baseList.add(pind);
+  baseList.add(recind);
   cur=0;
   ind=0;
  }
@@ -60,7 +60,7 @@ auto DeepList::FillList::fill(Rec *list) -> FillResult
 
         if( ptr->flag )
           {
-           if( ptr->kind==TargetPregen )
+           if( ptr->isFirst() )
              {
               if( ptr->lock )
                 {
@@ -69,7 +69,7 @@ auto DeepList::FillList::fill(Rec *list) -> FillResult
                  throw std::runtime_error("'Makefile-deep' creation error: cyclic pregen target dependencies found");
                 }
 
-              return { .pind=i };
+              return { .recind=i };
              }
            else
              {
@@ -86,17 +86,46 @@ size_t DeepList::FillList::copy(Rec *list,Rec **olist) const
  {
   Rec **start=olist;
 
-  baseList.applyOther( [list,&olist] (size_t ind)
-                       {
-                        Rec *ptr=list+ind;
-
-                        if( ptr->flag && ptr->kind==TargetLib )
+  if( rec->kind==TargetPregen )
+    {
+     baseList.applyOther( [list,&olist] (size_t ind)
                           {
-                           ptr->flag=false;
-                           *(olist++)=ptr;
-                          }
+                           Rec *ptr=list+ind;
 
-                       } );
+                           if( ptr->flag && ptr->kind==TargetLib )
+                             {
+                              ptr->flag=false;
+                              *(olist++)=ptr;
+                             }
+
+                          } );
+    }
+  else // TargetMake
+    {
+     baseList.applyOther( [list,&olist] (size_t ind)
+                          {
+                           Rec *ptr=list+ind;
+
+                           if( ptr->flag && ptr->kind==TargetLib )
+                             {
+                              ptr->flag=false;
+                              *(olist++)=ptr;
+                             }
+
+                          } );
+
+     baseList.applyOther( [list,&olist] (size_t ind)
+                          {
+                           Rec *ptr=list+ind;
+
+                           if( ptr->flag )
+                             {
+                              ptr->flag=false;
+                              *(olist++)=ptr;
+                             }
+
+                          } );
+    }
 
   rec->flag=false;
   *(olist++)=rec;
@@ -124,6 +153,7 @@ TargetKind DeepList::GetKind(String fileName)
   if( tag==GetTag(TargetLib) ) return TargetLib;
   if( tag==GetTag(TargetExe) ) return TargetExe;
   if( tag==GetTag(TargetPregen) ) return TargetPregen;
+  if( tag==GetTag(TargetMake) ) return TargetMake;
 
   std::cout << "Bad type tag: " << tag << std::endl ;
 
@@ -154,9 +184,9 @@ size_t DeepList::add(String path)
     }
  }
 
-void DeepList::push(size_t pind)
+void DeepList::push(size_t recind)
  {
-  stack.emplace_back(list[pind],pind);
+  stack.emplace_back(list[recind],recind);
  }
 
 void DeepList::pop()
@@ -169,9 +199,9 @@ auto DeepList::top() -> FillList &
   return stack[stack.size()-1];
  }
 
-void DeepList::orderPregen(size_t pind)
+void DeepList::orderFirst(size_t recind)
  {
-  push(pind);
+  push(recind);
 
   while( !stack.empty() )
     {
@@ -187,7 +217,7 @@ void DeepList::orderPregen(size_t pind)
        }
      else
        {
-        push(res.pind);
+        push(res.recind);
        }
     }
  }
@@ -226,9 +256,9 @@ void DeepList::order()
 
   for(size_t ind=0; ind<count ;ind++)
     {
-     if( list[ind].kind==TargetPregen && list[ind].flag )
+     if( list[ind].isFirst() && list[ind].flag )
        {
-        orderPregen(ind);
+        orderFirst(ind);
        }
     }
 

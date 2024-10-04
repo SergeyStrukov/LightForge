@@ -150,13 +150,27 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "-include $(TARGET_ROOT)/Makefile-opt\n\n" ;
       }
      break;
+
+     case TargetMake :
+      {
+       out << ".PHONY: all clean\n\n" ;
+
+       out << "all:\n" ;
+       out << "\texport LIGHT_FORGE_BUILD=" << "$(abspath ../..)" << " ; $(MAKE) -C $(TARGET_ROOT)\n\n" ;
+
+       out << "clean:\n" ;
+      }
+     break;
     }
 
-  out << "SRCDIR_LIST =" << PrintList(target.src) << "\n\n" ;
+  if( target.kind!=TargetMake )
+    {
+     out << "SRCDIR_LIST =" << PrintList(target.src) << "\n\n" ;
 
-  out << "include ../../Makefile-tools\n\n" ;
+     out << "include ../../Makefile-tools\n\n" ;
 
-  out << "include ../../../Makefile-rules\n\n" ;
+     out << "include ../../../Makefile-rules\n\n" ;
+    }
 
   out.close();
 
@@ -286,13 +300,17 @@ static void AddTarget(const Path &buildDir,const Path &folder,const String &proj
   Path dir=folder/target.name;
 
   CreateFolder(dir);
-  CreateFolder(dir/"asm");
-  CreateFolder(dir/"dep");
-  CreateFolder(dir/"obj");
 
-  if( target.kind==TargetExe )
+  if( target.kind!=TargetMake )
     {
-     CreateFolder(dir/"out");
+     CreateFolder(dir/"asm");
+     CreateFolder(dir/"dep");
+     CreateFolder(dir/"obj");
+
+     if( target.kind==TargetExe )
+       {
+        CreateFolder(dir/"out");
+       }
     }
 
   CreateTargetMakefile(dir,target);

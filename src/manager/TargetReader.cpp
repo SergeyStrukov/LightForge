@@ -155,6 +155,10 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
     {
      kind=TargetPregen;
     }
+  else if( t1.text=="make" )
+    {
+     kind=TargetMake;
+    }
   else
     {
      std::cout << "File " << fileName << t1.pos << " : unknown target kind" << std::endl ;
@@ -194,6 +198,8 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
 
         if( t1.kind!=TokenName )
           {
+           if( t1.kind==TokenNull && kind==TargetMake ) return;
+
            std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
 
            throw std::runtime_error("file processing error");
@@ -221,11 +227,21 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
           }
         else if( t2.text=="=" )
           {
+           if( kind==TargetMake )
+             {
+              std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
+
+              throw std::runtime_error("file processing error");
+             }
+
            break;
           }
         else
           {
-           std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
+           if( kind==TargetMake )
+              std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
+           else
+              std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
 
            throw std::runtime_error("file processing error");
           }
@@ -240,6 +256,13 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
        }
      else if( t2.kind==TokenNull )
        {
+        if( kind==TargetMake )
+          {
+           base.emplace_back(std::move(t1.text));
+
+           return;
+          }
+
         std::cout << "File " << fileName << t2.pos << " : unexpected end of content" << std::endl ;
 
         throw std::runtime_error("file processing error");

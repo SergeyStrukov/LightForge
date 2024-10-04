@@ -15,6 +15,7 @@
 #define DeepList_h
 
 #include <map>
+#include <algorithm>
 
 #include "FullBaseList.h"
 
@@ -62,6 +63,8 @@ class DeepList
      bool flag = true ;
      bool lock = false ;
 
+     bool isFirst() const { return kind==TargetPregen || kind==TargetMake ; }
+
      Rec(const String &path_,std::vector<String> &&bases_,TargetKind kind_) : path(path_),bases(std::move(bases_)),kind(kind_) {}
     };
 
@@ -75,12 +78,12 @@ class DeepList
      size_t cur;
      size_t ind;
 
-     FillList(Rec &obj,size_t pind);
+     FillList(Rec &obj,size_t recind);
 
      struct FillResult
       {
        bool done = false ;
-       size_t pind = 0 ;
+       size_t recind = 0 ;
       };
 
      FillResult fill(Rec *list);
@@ -103,11 +106,11 @@ class DeepList
 
    size_t add(String path);
 
-   void push(size_t pind);
+   void push(size_t recind);
    void pop();
    FillList & top();
 
-   void orderPregen(size_t pind);
+   void orderFirst(size_t recind);
 
   public:
 
