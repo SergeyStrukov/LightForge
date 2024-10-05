@@ -52,3 +52,17 @@ make name: name1 ... nameN
 // target names: target OR proj.target
 
 ```
+
+```
+
+group name: name1 ... nameN
+
+// target names: target OR proj.target
+
+```
+
+```
+
+group name: *
+
+```

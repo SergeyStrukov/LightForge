@@ -158,18 +158,34 @@ static void CreateTargetMakefile(const Path &dir,const TargetInfo &target)
        out << "all:\n" ;
        out << "\texport LIGHT_FORGE_BUILD=" << "$(abspath ../..)" << " ; $(MAKE) -C $(TARGET_ROOT)\n\n" ;
 
-       out << "clean:\n" ;
+       out << "clean:\n\n" ;
+      }
+     break;
+
+     case TargetGroup :
+      {
+       out << ".PHONY: all clean\n\n" ;
+
+       out << "all:\n\n" ;
+
+       out << "clean:\n\n" ;
       }
      break;
     }
 
-  if( target.kind!=TargetMake )
+  if( target.kind!=TargetMake && target.kind!=TargetGroup )
     {
      out << "SRCDIR_LIST =" << PrintList(target.src) << "\n\n" ;
 
      out << "include ../../Makefile-tools\n\n" ;
 
      out << "include ../../../Makefile-rules\n\n" ;
+    }
+  else
+    {
+     out << "include ../../Makefile-tools\n\n" ;
+
+     out << "include ../../../Makefile-deeprules\n\n" ;
     }
 
   out.close();
@@ -301,7 +317,7 @@ static void AddTarget(const Path &buildDir,const Path &folder,const String &proj
 
   CreateFolder(dir);
 
-  if( target.kind!=TargetMake )
+  if( target.kind!=TargetMake && target.kind!=TargetGroup )
     {
      CreateFolder(dir/"asm");
      CreateFolder(dir/"dep");

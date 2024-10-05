@@ -126,22 +126,13 @@ void TargetReader::apply(String &&key,std::vector<String> &&list,const Path &fil
     }
  }
 
-TargetReader::TargetReader(Path &&path_,const Path &fileName)
+void TargetReader::read(const Path &fileName)
  {
-  path=std::move(path_);
-
   // 1
 
   FileReader inp(fileName);
 
-  Token t1=inp.nextValuable();
-
-  if( t1.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
+  Token t1=inp.nextName();
 
   if( t1.text=="exe" )
     {
@@ -159,6 +150,10 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
     {
      kind=TargetMake;
     }
+  else if( t1.text=="group" )
+    {
+     kind=TargetGroup;
+    }
   else
     {
      std::cout << "File " << fileName << t1.pos << " : unknown target kind" << std::endl ;
@@ -166,25 +161,11 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
      throw std::runtime_error("file processing error");
     }
 
-  Token t2=inp.nextValuable();
-
-  if( t2.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t2.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
+  Token t2=inp.nextName();
 
   name=std::move(t2.text);
 
-  Token t3=inp.nextValuable();
-
-  if( t3.kind!=TokenPunct || t3.text!=":" )
-    {
-     std::cout << "File " << fileName << t3.pos << " : ':' is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
+  Token t3=inp.nextPunct(':');
 
   base.reserve(BaseReserve);
 
@@ -194,15 +175,36 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
     {
      if( flag )
        {
-        t1=inp.nextValuable();
-
-        if( t1.kind!=TokenName )
+        if( kind==TargetGroup )
           {
-           if( t1.kind==TokenNull && kind==TargetMake ) return;
+           for(;;)
+             {
+              t1=inp.nextValuable();
 
-           std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
+              if( t1.kind==TokenNull ) return;
+              if( t1.kind==TokenName ) break;
 
-           throw std::runtime_error("file processing error");
+              if( t1.text=="*" )
+                {
+                 anyFlag=true;
+                }
+              else
+                {
+                 std::cout << "File " << fileName << t1.pos << " : name or '*' is expected" << std::endl ;
+
+                 throw std::runtime_error("file processing error");
+                }
+             }
+          }
+        else if( kind==TargetMake )
+          {
+           t1=inp.nextName(true);
+
+           if( t1.kind==TokenNull ) return;
+          }
+        else
+          {
+           t1=inp.nextName();
           }
        }
 
@@ -212,14 +214,7 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
        {
         if( t2.text=="." )
           {
-           t3=inp.nextValuable();
-
-           if( t3.kind!=TokenName )
-             {
-              std::cout << "File " << fileName << t3.pos << " : name is expected" << std::endl ;
-
-              throw std::runtime_error("file processing error");
-             }
+           t3=inp.nextName();
 
            base.emplace_back(std::move(t1.text),std::move(t3.text));
 
@@ -227,21 +222,48 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
           }
         else if( t2.text=="=" )
           {
-           if( kind==TargetMake )
+           if( kind==TargetMake || kind==TargetGroup )
              {
-              std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
+              switch( kind )
+                {
+                 case TargetMake :
+                   std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
+                 break;
+
+                 case TargetGroup :
+                   std::cout << "File " << fileName << t2.pos << " : '.' or '*' is expected" << std::endl ;
+                 break;
+
+                 default: ;
+                }
 
               throw std::runtime_error("file processing error");
              }
 
            break;
           }
+        else if( t2.text=="*" && kind==TargetGroup )
+          {
+           base.emplace_back(std::move(t1.text));
+           flag=false;
+
+           anyFlag=true;
+          }
         else
           {
-           if( kind==TargetMake )
-              std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
-           else
-              std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
+           switch( kind )
+             {
+              case TargetMake :
+                std::cout << "File " << fileName << t2.pos << " : '.' is expected" << std::endl ;
+              break;
+
+              case TargetGroup :
+                std::cout << "File " << fileName << t2.pos << " : '.' or '*' is expected" << std::endl ;
+              break;
+
+              default:
+                std::cout << "File " << fileName << t2.pos << " : '.' or '=' is expected" << std::endl ;
+             }
 
            throw std::runtime_error("file processing error");
           }
@@ -256,7 +278,7 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
        }
      else if( t2.kind==TokenNull )
        {
-        if( kind==TargetMake )
+        if( kind==TargetMake || kind==TargetGroup )
           {
            base.emplace_back(std::move(t1.text));
 
@@ -286,8 +308,9 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
         if( s1.kind!=TokenNull )
           {
            list.emplace_back(std::move(s1.text));
-           apply(std::move(t1.text),std::move(list),fileName,t1.pos);
           }
+
+        apply(std::move(t1.text),std::move(list),fileName,t1.pos);
 
         break;
        }
@@ -321,6 +344,42 @@ TargetReader::TargetReader(Path &&path_,const Path &fileName)
     }
  }
 
+String TargetReader::GetTargetName(const Path &fileName)
+ {
+  FileReader inp(fileName);
+
+  Token t1=inp.nextName();
+  Token t2=inp.nextName();
+
+  return t2.text;
+ }
+
+void TargetReader::updateBases(const Path &fullPath)
+ {
+  DirTree tree(fullPath);
+
+  for(const auto &entry : tree )
+    {
+     const Path &path=entry.path();
+
+     Path fileName=path/"TARGET";
+
+     if( isRegularFile(fileName) )
+       {
+        base.emplace_back(GetTargetName(fileName));
+       }
+    }
+ }
+
+TargetReader::TargetReader(const Path &fullPath,Path &&path_,const Path &fileName)
+ {
+  path=std::move(path_);
+
+  read(fileName);
+
+  if( anyFlag ) updateBases(fullPath);
+ }
+
 TargetReader::~TargetReader()
  {
  }
@@ -341,7 +400,7 @@ TargetListReader::TargetListReader(const Path &projRoot)
 
      if( isRegularFile(fileName) )
        {
-        list.emplace_back(Relative(path,projRoot),fileName);
+        list.emplace_back(path,Relative(path,projRoot),fileName);
        }
     }
 

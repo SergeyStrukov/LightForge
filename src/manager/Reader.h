@@ -230,6 +230,8 @@ class FileReader : ScanFile
 
    Token next();
    Token nextValuable();
+   Token nextName(bool orNull=false);
+   Token nextPunct(char ch);
 
    Token nextString();
  };

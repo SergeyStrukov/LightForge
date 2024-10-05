@@ -66,6 +66,7 @@ class TargetReader : TargetInfo
    bool incFlag = false ;
    bool incPrivateFlag = false ;
    bool pregenInpFlag = false ;
+   bool anyFlag = false ;
 
   private:
 
@@ -75,9 +76,15 @@ class TargetReader : TargetInfo
 
    void apply(String &&key,std::vector<String> &&list,const Path &fileName,TextPos pos);
 
+   void read(const Path &fileName);
+
+   static String GetTargetName(const Path &fileName);
+
+   void updateBases(const Path &fullPath);
+
   public:
 
-   TargetReader(Path &&path,const Path &fileName);
+   TargetReader(const Path &fullPath,Path &&path,const Path &fileName);
 
    ~TargetReader();
 

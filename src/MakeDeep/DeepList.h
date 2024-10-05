@@ -63,7 +63,7 @@ class DeepList
      bool flag = true ;
      bool lock = false ;
 
-     bool isFirst() const { return kind==TargetPregen || kind==TargetMake ; }
+     bool isFirst() const { return kind==TargetPregen || kind==TargetMake || kind==TargetGroup ; }
 
      Rec(const String &path_,std::vector<String> &&bases_,TargetKind kind_) : path(path_),bases(std::move(bases_)),kind(kind_) {}
     };

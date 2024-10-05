@@ -1,0 +1,32 @@
+# Makefile-deeprules
+#-------------------------------------------------------------------------------
+#
+#  Project: LightForge 1.00
+#
+#  License: Boost Software License - Version 1.0 - August 17th, 2003
+#
+#            see http://www.boost.org/LICENSE_1_0.txt or the local copy
+#
+#  Copyright (c) 2024 Sergey Strukov. All rights reserved.
+#
+#-------------------------------------------------------------------------------
+
+ifeq ($(MAKECMDGOALS),deep)
+
+Makefile-deep : ../../PROJECTS
+	@$(ECHO) "making Makefile-deep..." ; ../../../MakeDeep.exe
+
+include Makefile-deep
+
+endif
+
+ifeq ($(MAKECMDGOALS),deepclean)
+
+Makefile-deepclean : ../../PROJECTS
+	@$(ECHO) "making Makefile-deepclean..." ; ../../../MakeDeepclean.exe
+
+include Makefile-deepclean
+
+endif
+
+#-------------------------------------------------------------------------------

@@ -100,7 +100,7 @@ size_t DeepList::FillList::copy(Rec *list,Rec **olist) const
 
                           } );
     }
-  else // TargetMake
+  else // TargetMake || TargetGroup
     {
      baseList.applyOther( [list,&olist] (size_t ind)
                           {
@@ -154,6 +154,7 @@ TargetKind DeepList::GetKind(String fileName)
   if( tag==GetTag(TargetExe) ) return TargetExe;
   if( tag==GetTag(TargetPregen) ) return TargetPregen;
   if( tag==GetTag(TargetMake) ) return TargetMake;
+  if( tag==GetTag(TargetGroup) ) return TargetGroup;
 
   std::cout << "Bad type tag: " << tag << std::endl ;
 

@@ -44,7 +44,8 @@ enum TargetKind
   TargetLib,
   TargetExe,
   TargetPregen,
-  TargetMake
+  TargetMake,
+  TargetGroup
  };
 
 /* functions */
@@ -57,6 +58,7 @@ inline constexpr const char * GetTag(TargetKind kind)
      case TargetExe : return "exe" ;
      case TargetPregen : return "pregen" ;
      case TargetMake : return "make" ;
+     case TargetGroup : return "group";
 
      default: return "???";
     }

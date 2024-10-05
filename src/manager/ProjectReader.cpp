@@ -25,37 +25,16 @@ ProjectReader::ProjectReader(const String &fileName)
 
   FileReader inp(fileName);
 
-  Token t1=inp.nextValuable();
-  Token t2=inp.nextValuable();
-
-  if( t1.kind!=TokenName )
-    {
-     std::cout << "File " << fileName << t1.pos << " : name is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
-
-  if( t2.kind!=TokenPunct || t2.text!=":" )
-    {
-     std::cout << "File " << fileName << t2.pos << " : ':' is expected" << std::endl ;
-
-     throw std::runtime_error("file processing error");
-    }
+  Token t1=inp.nextName();
+  Token t2=inp.nextPunct(':');
 
   name=std::move(t1.text);
 
   for(;;)
     {
-     Token t=inp.nextValuable();
+     Token t=inp.nextName(true);
 
      if( !t ) break;
-
-     if( t.kind!=TokenName )
-       {
-        std::cout << "File " << fileName << t.pos << " : name is expected" << std::endl ;
-
-        throw std::runtime_error("file processing error");
-       }
 
      base.emplace_back(std::move(t.text));
     }

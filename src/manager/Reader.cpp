@@ -52,7 +52,7 @@ CharTable::CharTable()
   set(" \t\f\v\r\n",CharSpace);
   set("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_",CharLetter);
   set("0123456789",CharDigit);
-  set(":.=",CharPunct);
+  set(":.=*",CharPunct);
  }
 
 const CharTable CharTable::Object;
@@ -399,6 +399,38 @@ Token FileReader::nextValuable()
 
      if( hasValue(ret.kind) ) return ret;
     }
+ }
+
+Token FileReader::nextName(bool orNull)
+ {
+  Token ret=nextValuable();
+
+  if( orNull && ret.kind==TokenNull ) return ret;
+
+  if( ret.kind!=TokenName )
+    {
+     std::cout << "File " << getFileName() << ret.pos << " : name is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  return ret;
+ }
+
+Token FileReader::nextPunct(char ch)
+ {
+  Token ret=nextValuable();
+
+  char temp[]={ch,0};
+
+  if( ret.kind!=TokenPunct || ret.text!=temp )
+    {
+     std::cout << "File " << getFileName() << ret.pos << " : '" << ch << "' is expected" << std::endl ;
+
+     throw std::runtime_error("file processing error");
+    }
+
+  return ret;
  }
 
 Token FileReader::nextString()

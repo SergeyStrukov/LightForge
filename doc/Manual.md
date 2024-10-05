@@ -96,6 +96,7 @@ In the last case the target name is given in the form *ProjectName.TargetName*.
 Targets inside the same project MAY have cyclic dependencies.
 Don't use strange extensions and names for your output files.
 The good practise is a `.a` extensin for libraries and `.exe` extension for executables.
+Separate the sign '=' with spaces before and after.
 
 #### Library targets
 
