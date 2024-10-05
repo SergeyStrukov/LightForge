@@ -29,10 +29,13 @@ This file contains the general project description. For example:
 TestForge: TestForgeLib
 ```
 Description consists of the **ProjectName**, then colon follows, then the list of base projects.
+
 Each project inside **LightForge** is identified by its **ProjectName**. It must be a C-name.
 Each project name must be unique.
+
 Each project has a list of base projects: each base project contributes to the target project.
 Cyclic dependencies among projects are not allowed.
+
 It is a good practise provide the file **Makefile** along with the file **PROJECT** with the following content (or similar):
 ```
 # Makefile
@@ -89,14 +92,20 @@ SRC = .
 
 OUT = test.exe
 ```
-Target has a *type*. There are 4 target types: *library*, *executable*, *pregen* and *make*.
+Target has a *type*. There are 5 target types: *library*, *executable*, *pregen*, *make* and *group*.
+
 Target has a *name*, it must be a C-name, and must be unique inside the project.
+
 Target has a *base target list*. This list may contain current project targets as well as another project targets.
 In the last case the target name is given in the form *ProjectName.TargetName*.
+
 Targets inside the same project MAY have cyclic dependencies.
+
 Don't use strange extensions and names for your output files.
 The good practise is a `.a` extensin for libraries and `.exe` extension for executables.
-Separate the sign '=' with spaces before and after.
+
+SEPARATE the sign '=' with spaces before and after.
+You MAY use C++ style comments before the first sign '='.
 
 #### Library targets
 
@@ -114,9 +123,13 @@ SRC = dir1 dir2 ...
 [INC_PRIVATE = dir1 dir2 ...]
 ```
 It starts with the target type **lib**, then TargetName follows, then colon follows, then the list of base targets.
+
 **OUT** defines the library file name to build.
+
 **SRC** defines the list of source folders. All `*.cpp` files and `*.s` files in these folders and its subfolders comprise the source file set.
+
 **INC** and **INC_PRIVATE** are optional folder lists. They are used to lookup for header files during compilation.
+
 The difference between them is: **INC** folders are propagated to the dependent targets.
 Built library is propagated to dependent **exe** and **pregen** targets.
 All relative pathes here are based on the **TARGET** folder.
@@ -137,6 +150,7 @@ SRC = dir1 dir2 ...
 [INC_PRIVATE = dir1 dir2 ...]
 ```
 It starts with the target type **exe**.
+
 **OUT** defines the executable file name to build.
 
 These executable should not change any files in the current folder! Otherwise, running them may break **LightForge**.
@@ -160,9 +174,12 @@ SRC = dir1 dir2 ...
 [INP = file1 file2 ...]
 ```
 It starts with the target type **pregen**.
+
 **OUT** defines the folder where pregen should place the output files.
 It is passed to `pregen.exe` (modified to count base directory change).
+
 You may choose to use **INC_PRIVATE** list for such target to avoid unwanted include folder propagation.
+
 **INP** is the (optional) list of files. This list with modified path will be passed to `pregen.exe` as arguments after **OUT**.
 These files becomes prerequisites of pregen: changing them cause pregen to be rerun.
 
@@ -190,7 +207,20 @@ make TargetName: target1 target2 ...
 ```
 
 You must provide a `Makefile` alone with the file **TARGET**.
-You may use the variable **LIGHT_FORGE_BUILD** in this makefile to find the **LightForge** build path.
+
+You may use the path `$(LIGHT_FORGE_BUILD)` in this makefile to find the **LightForge** build path.
+
+#### Group targets
+
+Group target is to build several other targets.
+
+```
+group TargetName: target1 target2 ...
+```
+
+You MAY use here the sign '*' in the base target list. In such case all targets from subfolders of the group target folder will be included in the list.
+
+To build the whole list use the command `make deep`.
 
 #### Build order
 
@@ -199,8 +229,8 @@ The following rules are applied:
 1. Executable target is built after all library base targets.
 2. Pregen target is built after all library base targets.
 3. Any target is built after all pregen base targets.
-4. Any target is built after all make base targets.
-5. Make target is built after all base targets.
+4. Any target is built after all make or group base targets.
+5. Make or group targets are built after all base targets.
 
 ## LightForge side
 
