@@ -76,6 +76,18 @@ static void CreateMakefile(const Path &folder,const std::vector<TargetReader> &t
      out << "\t$(MAKE) -C " << name << " deep\n\n" ;
     }
 
+  out << ".PHONY: cleanproj\n\n" ;
+  out << "cleanproj:\n" ;
+
+  for(const TargetReader &obj : targets )
+    {
+     const String &name=obj.getInfo().name;
+
+     out << "\t$(MAKE) -C " << name << " clean\n" ;
+    }
+
+  out << "\n" ;
+
   out.close();
 
   if( !out )

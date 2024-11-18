@@ -87,7 +87,7 @@ class ProjectListReader
 
    void addProject(const String &projName,const std::vector<String> &baseList);
 
-   void delProject(const String &projName);
+   void delProject(const String &projName,const String &build);
 
    void save(const String &fileName) const;
  };

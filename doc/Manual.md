@@ -254,6 +254,8 @@ The command **make TargetName** runs the deep build of the target:
 make -C TargetName deep
 ```
 
+The command **make cleanproj** cleans all targets in the project.
+
 ### Build/Project/Target
 
 For each target the folder **LightForge/build/BuildName/ProjectName/TargetName** is created.

@@ -264,7 +264,7 @@ void ProjectListReader::addProject(const String &projName,const std::vector<Stri
   append(String(projName),std::vector<String>(baseList));
  }
 
-void ProjectListReader::delProject(const String &projName)
+void ProjectListReader::delProject(const String &projName,const String &build)
  {
   auto ptr=list.find(projName);
 
@@ -276,7 +276,7 @@ void ProjectListReader::delProject(const String &projName)
     }
   else
     {
-     std::cout << "There is no project " << projName << std::endl ;
+     std::cout << "There is no project " << projName << " in the build " << build << std::endl ;
     }
  }
 

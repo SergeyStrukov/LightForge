@@ -16,8 +16,7 @@
 
 namespace App {
 
-template <class S>
-static void DelProjectFolder(const Path &forge,S build,const String &projName)
+static void DelProjectFolder(const Path &forge,const String &build,const String &projName)
  {
   Path folder=forge/"build"/build/projName;
 
@@ -27,7 +26,7 @@ static void DelProjectFolder(const Path &forge,S build,const String &projName)
 
   ProjectListReader info(infoFile);
 
-  info.delProject(projName);
+  info.delProject(projName,build);
 
   info.save(infoFile);
  }
