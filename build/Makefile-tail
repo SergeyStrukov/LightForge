@@ -19,9 +19,11 @@ ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),dep)
 ifneq ($(MAKECMDGOALS),list)
 ifneq ($(MAKECMDGOALS),deepclean)
+ifneq ($(MAKECMDGOALS),vscode)
 
 -include $(DEP_FILE)
 
+endif
 endif
 endif
 endif

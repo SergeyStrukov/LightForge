@@ -7,17 +7,23 @@
 #
 #            see http://www.boost.org/LICENSE_1_0.txt or the local copy
 #
-#  Copyright (c) 2023 Sergey Strukov. All rights reserved.
+#  Copyright (c) 2024 Sergey Strukov. All rights reserved.
 #
 #----------------------------------------------------------------------------------------
 
-.PHONY: install
+CC = g++
 
-install:
-	$(MAKE) -C src/manager
-	$(MAKE) -C src/MakeList
-	$(MAKE) -C src/MakeCCopt
-	$(MAKE) -C src/MakeDeep
-	$(MAKE) -C src/MakeLDopt
-	$(MAKE) -C src/MakeDeepclean
-	$(MAKE) -C src/MakeVSCode
+CCOPT = -std=c++20 -fwrapv -Wall -Wextra -I../common
+
+SRC = main.cpp
+
+INC = ../common/Tools.h
+
+TARGET = ../../build/MakeVSCode.exe
+
+all: $(TARGET)
+
+$(TARGET) : $(SRC) $(INC)
+	$(CC) $(CCOPT) $(SRC) -o $(TARGET)
+
+

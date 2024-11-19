@@ -21,7 +21,7 @@ DEP_FILE = $(DEP_PATH)/Makefile-dep
 
 #-------------------------------------------------------------------------------
 
-.PHONY : all asm deep clean dep list deepclean
+.PHONY : all asm deep clean dep list deepclean vscode
 
 all: $(TARGET)
 
@@ -58,6 +58,11 @@ Makefile-libs : LD-opt.txt
 
 LD-opt.txt : ../../PROJECTS
 	@$(ECHO) "making LD-opt..." ; ../../../MakeLDopt.exe
+
+vscode : $(TARGET_ROOT)/.vscode/settings.json
+
+$(TARGET_ROOT)/.vscode/settings.json : CC-opt.txt
+	@$(ECHO) "making vscode..." ; ../../../MakeVSCode.exe $< $@
 
 #-------------------------------------------------------------------------------
 
