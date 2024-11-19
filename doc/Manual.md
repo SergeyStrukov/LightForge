@@ -292,6 +292,10 @@ Clean dependency files (to rebuild them):
 ```
 /home/user/LightForge/build/BuildName/ProjectName/TargetName>make dep
 ```
+Generate include path **json** file in the target folder to help **VSCode**:
+```
+/home/user/LightForge/build/BuildName/ProjectName/TargetName>make vscode
+```
 
 #### Library targets
 

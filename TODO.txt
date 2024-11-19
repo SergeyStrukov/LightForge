@@ -1,3 +1,2 @@
-support .vscode generation
 freeze/unfreeze
 clean all projects, not frozen
