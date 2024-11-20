@@ -46,7 +46,7 @@ int Main(const char *optFileName,const char *jsonFileName)
   while( (inp>>line).good() )
     {
      String path=line.substr(2);
-     String relpath=Relative(path,base);
+     String relpath=Relative(path,base.parent_path());
 
      out << "  \"" << relpath << "\",\n" ;
     }
